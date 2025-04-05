@@ -3,10 +3,10 @@ import React, { useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import FeatureCard from '@/components/FeatureCard';
 import DownloadSection from '@/components/DownloadSection';
-import CursorRobot from '@/components/CursorRobot';
 import { Mic, GamepadIcon, ShoppingCart, Wallet, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
+import DynamicBackground from '@/components/DynamicBackground';
 
 const Index = () => {
   useEffect(() => {
@@ -35,18 +35,20 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen">
-      <CursorRobot />
+    <div className="min-h-screen relative overflow-hidden">
+      <DynamicBackground />
       <Navbar />
       
       {/* Hero Section */}
-      <section className="pt-28 pb-16 md:pt-36 md:pb-24 px-4">
+      <section className="pt-28 pb-16 md:pt-36 md:pb-24 px-4 relative z-10">
         <div className="container mx-auto">
           <div className="flex flex-col md:flex-row items-center">
             <div className="md:w-1/2 animated-element">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
                 Your Gentle Robot <span className="text-primary">Companion</span>
               </h1>
+              <p className="text-xl text-gray-600 mb-2">SENIPY</p>
+              <p className="text-lg text-gray-500 mb-8 italic">Maker's of near Future</p>
               <p className="text-xl text-gray-600 mb-8 max-w-lg">
                 A friendly assistant designed to simplify daily tasks and enhance well-being, 
                 particularly for seniors and those seeking an accessible technology experience.
@@ -106,7 +108,7 @@ const Index = () => {
       </section>
       
       {/* Features Section */}
-      <section id="features" className="py-16 bg-gray-50">
+      <section id="features" className="py-16 bg-gray-50 relative z-10">
         <div className="container mx-auto px-4">
           <h2 className="section-title text-center">Key Features</h2>
           <p className="section-description text-center">
@@ -153,56 +155,8 @@ const Index = () => {
         </div>
       </section>
       
-      {/* Testimonials Section */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <h2 className="section-title text-center">What Our Users Say</h2>
-          <p className="section-description text-center">
-            Hear from people who have experienced the benefits of our robot companion
-          </p>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
-            <div className="bg-blue-50 p-6 rounded-2xl shadow animated-element" style={{ animationDelay: '100ms' }}>
-              <div className="text-primary text-4xl mb-4">"</div>
-              <p className="text-gray-700 mb-4">The voice commands have made using technology enjoyable again. I don't have to struggle with small buttons or complicated menus.</p>
-              <div className="flex items-center mt-4">
-                <div className="w-12 h-12 bg-gray-300 rounded-full mr-4"></div>
-                <div>
-                  <h4 className="font-bold">Margaret L.</h4>
-                  <p className="text-sm text-gray-500">78 years old</p>
-                </div>
-              </div>
-            </div>
-            
-            <div className="bg-blue-50 p-6 rounded-2xl shadow animated-element" style={{ animationDelay: '200ms' }}>
-              <div className="text-primary text-4xl mb-4">"</div>
-              <p className="text-gray-700 mb-4">I love playing the memory games each day. It's become part of my routine, and I've noticed improvement in my recall abilities.</p>
-              <div className="flex items-center mt-4">
-                <div className="w-12 h-12 bg-gray-300 rounded-full mr-4"></div>
-                <div>
-                  <h4 className="font-bold">Robert J.</h4>
-                  <p className="text-sm text-gray-500">82 years old</p>
-                </div>
-              </div>
-            </div>
-            
-            <div className="bg-blue-50 p-6 rounded-2xl shadow animated-element" style={{ animationDelay: '300ms' }}>
-              <div className="text-primary text-4xl mb-4">"</div>
-              <p className="text-gray-700 mb-4">As a caregiver, the Guardian Connect feature gives me peace of mind. I can check in easily and know my mother is doing well.</p>
-              <div className="flex items-center mt-4">
-                <div className="w-12 h-12 bg-gray-300 rounded-full mr-4"></div>
-                <div>
-                  <h4 className="font-bold">Susan K.</h4>
-                  <p className="text-sm text-gray-500">Family caregiver</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      
       {/* Call to Action */}
-      <section className="py-16 bg-gradient-to-r from-primary to-blue-600 text-white">
+      <section className="py-16 bg-gradient-to-r from-primary to-blue-600 text-white relative z-10">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6 animated-element">Ready to Welcome Your Robot Companion?</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto animated-element" style={{ animationDelay: '100ms' }}>
@@ -223,7 +177,7 @@ const Index = () => {
       <DownloadSection />
       
       {/* Footer */}
-      <footer className="bg-gray-800 text-white py-12">
+      <footer className="bg-gray-800 text-white py-12 relative z-10">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
@@ -231,10 +185,10 @@ const Index = () => {
                 <div className="h-8 w-8 bg-primary rounded-full flex items-center justify-center">
                   <div className="h-4 w-4 bg-white rounded-full"></div>
                 </div>
-                <span className="text-xl font-bold">Robo Companion</span>
+                <span className="text-xl font-bold">SENIPY</span>
               </div>
               <p className="text-gray-300">
-                Enhancing daily life through accessible technology.
+                Maker's of near Future
               </p>
             </div>
             
@@ -251,15 +205,15 @@ const Index = () => {
             <div>
               <h3 className="text-lg font-bold mb-4">Contact Us</h3>
               <ul className="space-y-2 text-gray-300">
-                <li>Email: support@robocompanion.com</li>
-                <li>Phone: (555) 123-4567</li>
-                <li>Address: 123 Innovation Way, Tech City</li>
+                <li>Email: senipy08@gmail.com</li>
+                <li>Phone: +91 9353152727</li>
+                <li>Address: Bangalore, India</li>
               </ul>
             </div>
           </div>
           
           <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-            &copy; {new Date().getFullYear()} Robo Companion. All rights reserved.
+            &copy; {new Date().getFullYear()} SENIPY. All rights reserved.
           </div>
         </div>
       </footer>
