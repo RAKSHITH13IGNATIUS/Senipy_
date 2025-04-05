@@ -22,7 +22,7 @@ const DynamicBackground: React.FC = () => {
 
     // Create particles
     const particlesArray: Particle[] = [];
-    const particleCount = 100;
+    const particleCount = 150; // Increased particle count
     
     class Particle {
       x: number;
@@ -31,25 +31,35 @@ const DynamicBackground: React.FC = () => {
       speedX: number;
       speedY: number;
       color: string;
+      hue: number;
+      colorChangeSpeed: number;
 
       constructor() {
         this.x = Math.random() * canvas.width;
         this.y = Math.random() * canvas.height;
-        this.size = Math.random() * 3 + 1;
-        this.speedX = (Math.random() - 0.5) * 0.5;
-        this.speedY = (Math.random() - 0.5) * 0.5;
-        this.color = `rgba(100, 149, 237, ${Math.random() * 0.5})`;
+        this.size = Math.random() * 5 + 1; // Larger particles
+        this.speedX = (Math.random() - 0.5) * 1; // Faster movement
+        this.speedY = (Math.random() - 0.5) * 1;
+        this.hue = Math.random() * 60 + 180; // Blue-ish hues
+        this.colorChangeSpeed = Math.random() * 0.5;
+        this.color = `hsla(${this.hue}, 100%, 70%, ${Math.random() * 0.6 + 0.2})`;
       }
 
       update() {
         this.x += this.speedX;
         this.y += this.speedY;
 
+        // Boundary check
         if (this.x > canvas.width) this.x = 0;
         else if (this.x < 0) this.x = canvas.width;
         
         if (this.y > canvas.height) this.y = 0;
         else if (this.y < 0) this.y = canvas.height;
+        
+        // Change color over time
+        this.hue += this.colorChangeSpeed;
+        if (this.hue > 240) this.hue = 180;
+        this.color = `hsla(${this.hue}, 100%, 70%, ${Math.random() * 0.3 + 0.3})`;
       }
 
       draw() {
@@ -83,8 +93,8 @@ const DynamicBackground: React.FC = () => {
       
       // Draw gradient background
       const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-      gradient.addColorStop(0, 'rgba(240, 248, 255, 0.8)');
-      gradient.addColorStop(1, 'rgba(214, 240, 255, 0.8)');
+      gradient.addColorStop(0, 'rgba(10, 30, 70, 0.9)'); // Darker blue
+      gradient.addColorStop(1, 'rgba(50, 80, 120, 0.9)'); // Medium blue
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
@@ -100,10 +110,10 @@ const DynamicBackground: React.FC = () => {
           const distance = Math.sqrt(dx * dx + dy * dy);
           
           // Draw line between nearby particles
-          if (distance < 100) {
+          if (distance < 120) {
             ctx.beginPath();
-            ctx.strokeStyle = `rgba(100, 149, 237, ${0.1 - (distance/1000)})`;
-            ctx.lineWidth = 0.2;
+            ctx.strokeStyle = `rgba(100, 200, 255, ${0.2 - (distance/600)})`;
+            ctx.lineWidth = 0.6;
             ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
             ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
             ctx.stroke();
@@ -114,13 +124,19 @@ const DynamicBackground: React.FC = () => {
           const dyMouse = mouseY - particlesArray[a].y;
           const mouseDist = Math.sqrt(dxMouse * dxMouse + dyMouse * dyMouse);
           
-          if (mouseDist < 150) {
+          if (mouseDist < 200) { // Increased interaction radius
             ctx.beginPath();
-            ctx.strokeStyle = `rgba(100, 149, 237, ${0.3 - (mouseDist/500)})`;
-            ctx.lineWidth = 0.5;
+            ctx.strokeStyle = `rgba(150, 220, 255, ${0.5 - (mouseDist/400)})`; // Brighter lines
+            ctx.lineWidth = 1;
             ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
             ctx.lineTo(mouseX, mouseY);
             ctx.stroke();
+            
+            // Push particles away from mouse for interactive feel
+            if (mouseDist < 100) {
+              particlesArray[a].x += dxMouse * 0.01;
+              particlesArray[a].y += dyMouse * 0.01;
+            }
           }
         }
       }

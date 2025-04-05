@@ -45,7 +45,7 @@ const Navbar: React.FC = () => {
                 <div className="h-3 w-3 bg-secondary rounded-full"></div>
               </div>
             </div>
-            <span className="text-xl font-bold">Robo Companion</span>
+            <span className="text-xl font-bold">SENIPY</span>
           </div>
 
           {/* Desktop Navigation */}
@@ -68,6 +68,9 @@ const Navbar: React.FC = () => {
             <Link to="/signup" className="btn-primary !py-2 !px-5">
               Sign Up
             </Link>
+            <Link to="/admin" className="text-lg font-medium hover:text-primary transition-colors">
+              Admin
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -82,7 +85,7 @@ const Navbar: React.FC = () => {
 
       {/* Mobile Menu */}
       <div className={`md:hidden overflow-hidden transition-all duration-300 ${
-        isMenuOpen ? 'max-h-60 bg-white/95 backdrop-blur-md shadow-md' : 'max-h-0'
+        isMenuOpen ? 'max-h-80 bg-white/95 backdrop-blur-md shadow-md' : 'max-h-0'
       }`}>
         <div className="container mx-auto px-4 py-4">
           <div className="flex flex-col space-y-4">
@@ -98,6 +101,9 @@ const Navbar: React.FC = () => {
             >
               Download
             </button>
+            <Link to="/admin" className="text-lg font-medium py-2 hover:text-primary transition-colors">
+              Admin
+            </Link>
             <div className="pt-2 flex flex-col space-y-3">
               <Link to="/login" className="btn-secondary">
                 Login
