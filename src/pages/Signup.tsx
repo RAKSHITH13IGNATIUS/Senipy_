@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useToast } from "@/hooks/use-toast";
 import DynamicBackground from '@/components/DynamicBackground';
 
 const Signup = () => {
@@ -14,26 +15,55 @@ const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const handleSignup = (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!agreedToTerms) {
-      alert('Please agree to the terms and conditions');
+      toast({
+        title: "Terms Required",
+        description: "Please agree to the terms and conditions",
+        variant: "destructive",
+      });
       return;
     }
     
+    setIsLoading(true);
+    
     // In a real app, you would register the user on a backend
     // For now, we'll just simulate a successful registration
-    localStorage.setItem('user', JSON.stringify({ 
-      firstName, 
-      lastName, 
-      email 
-    }));
-    
-    // Navigate to the download section
-    navigate('/#download');
+    setTimeout(() => {
+      const userData = { 
+        id: Date.now(),
+        firstName, 
+        lastName, 
+        email,
+        lastLogin: new Date().toLocaleString(),
+      };
+      
+      localStorage.setItem('user', JSON.stringify(userData));
+      
+      // Also store in our mock "database" of users
+      try {
+        const existingUsers = JSON.parse(localStorage.getItem('users') || '[]');
+        existingUsers.push(userData);
+        localStorage.setItem('users', JSON.stringify(existingUsers));
+      } catch (e) {
+        console.error("Error saving user data:", e);
+      }
+      
+      toast({
+        title: "Account Created",
+        description: "Welcome to SENIPY!",
+      });
+      
+      // Navigate to the download section
+      setIsLoading(false);
+      navigate('/#download');
+    }, 1000);
   };
 
   return (
@@ -128,8 +158,12 @@ const Signup = () => {
                   </label>
                 </div>
                 
-                <Button type="submit" className="w-full text-lg py-6 bg-primary hover:bg-primary/90">
-                  Create Account
+                <Button 
+                  type="submit" 
+                  className="w-full text-lg py-6 bg-primary hover:bg-primary/90"
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Creating Account..." : "Create Account"}
                 </Button>
               </div>
             </form>

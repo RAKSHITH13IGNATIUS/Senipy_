@@ -8,7 +8,7 @@ const DownloadSection: React.FC = () => {
       <div className="container mx-auto px-4">
         <h2 className="section-title text-center">Download Our App</h2>
         <p className="section-description text-center">
-          Get started with your Robo Companion today. It's free and easy to install!
+          Get started with your SENIPY AI today. It's free and easy to install!
         </p>
         
         <div className="max-w-3xl mx-auto mt-12 bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
@@ -32,25 +32,21 @@ const DownloadSection: React.FC = () => {
                 <li>Open the APK file on your Android device.</li>
                 <li>Follow the on-screen installation instructions.</li>
                 <li>Allow any required permissions when prompted.</li>
-                <li>Launch Robo Companion and start exploring!</li>
+                <li>Launch SENIPY and start exploring!</li>
               </ol>
             </div>
             
             <a 
-              href="#" 
+              href="/downloads/senipy.apk" 
               className="btn-primary flex items-center gap-2 text-xl" 
-              onClick={(e) => {
-                e.preventDefault();
-                // In a real app, this would download the APK
-                alert("APK download would start here. This is a demo.");
-              }}
+              download="senipy.apk"
             >
               <Download size={24} />
               Download APK
             </a>
             
             <p className="mt-8 text-gray-500 text-center">
-              Need help installing? Contact our support team at support@robocompanion.com
+              Need help installing? Contact our support team at senipy08@gmail.com
             </p>
           </div>
         </div>

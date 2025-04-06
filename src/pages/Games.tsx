@@ -5,7 +5,7 @@ import Navbar from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import DynamicBackground from '@/components/DynamicBackground';
-import { Brain, BookOpen, Puzzle, PenTool, Trophy } from 'lucide-react';
+import { Brain, BookOpen, Puzzle, PenTool, Trophy, Home } from 'lucide-react';
 
 const Games = () => {
   return (
@@ -15,12 +15,18 @@ const Games = () => {
       
       <div className="container mx-auto px-4 py-16 mt-12 relative z-10">
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-white bg-gray-800/70 inline-block px-6 py-2 rounded-lg">
             Games That Keep You <span className="text-primary">Sharp</span>
           </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-xl text-white max-w-3xl mx-auto bg-gray-800/50 p-4 rounded-lg">
             Enjoy a variety of games designed to entertain while providing cognitive benefits and improving digital skills.
           </p>
+          <Link to="/" className="mt-6 inline-block">
+            <Button className="bg-primary hover:bg-primary/90 gap-2">
+              <Home size={20} />
+              Return Home
+            </Button>
+          </Link>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -111,7 +117,7 @@ const GameCard = ({
           </div>
         </div>
       </HoverCardTrigger>
-      <HoverCardContent className="w-80">
+      <HoverCardContent className="w-80 bg-white/90 backdrop-blur-sm border border-gray-200 shadow-xl">
         <div className="space-y-3">
           <div className="flex items-center gap-3">
             <div className={`${color} p-3 rounded-full text-white`}>

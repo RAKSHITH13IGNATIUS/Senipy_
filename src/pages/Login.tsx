@@ -5,22 +5,37 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { useToast } from "@/hooks/use-toast";
 import DynamicBackground from '@/components/DynamicBackground';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
     
     // In a real app, you would authenticate against a backend
     // For now, we'll just simulate a successful login
-    localStorage.setItem('user', JSON.stringify({ email }));
-    
-    // Navigate to the download section
-    navigate('/#download');
+    setTimeout(() => {
+      localStorage.setItem('user', JSON.stringify({ 
+        email,
+        loginTime: new Date().toISOString()
+      }));
+      
+      toast({
+        title: "Login Successful",
+        description: "Welcome back to SENIPY!",
+      });
+      
+      // Navigate to the download section
+      setIsLoading(false);
+      navigate('/#download');
+    }, 1000);
   };
 
   return (
@@ -76,8 +91,12 @@ const Login = () => {
                     required
                   />
                 </div>
-                <Button type="submit" className="w-full text-lg py-6 bg-primary hover:bg-primary/90">
-                  Log In
+                <Button 
+                  type="submit" 
+                  className="w-full text-lg py-6 bg-primary hover:bg-primary/90"
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Logging in..." : "Log In"}
                 </Button>
               </div>
             </form>
