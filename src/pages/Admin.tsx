@@ -1,9 +1,10 @@
 
 import React, { useState } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { TabsContent, Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { 
   Table, 
   TableBody, 
@@ -12,294 +13,382 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import DynamicBackground from '@/components/DynamicBackground';
-import { Link } from 'react-router-dom';
-import { UserPlus, Users, Download, Settings, LogOut } from 'lucide-react';
+import { 
+  BarChart, 
+  Bar, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell
+} from "recharts";
+import { useNavigate } from 'react-router-dom';
+
+// Mock data
+const usersData = [
+  { id: 1, name: "John Smith", email: "john@example.com", phone: "+1 555-123-4567", location: "New York", lastActive: "2 hours ago", status: "active" },
+  { id: 2, name: "Maria Garcia", email: "maria@example.com", phone: "+1 555-234-5678", location: "Los Angeles", lastActive: "1 day ago", status: "active" },
+  { id: 3, name: "Robert Johnson", email: "robert@example.com", phone: "+1 555-345-6789", location: "Chicago", lastActive: "3 days ago", status: "inactive" },
+  { id: 4, name: "Lisa Chen", email: "lisa@example.com", phone: "+1 555-456-7890", location: "Houston", lastActive: "5 hours ago", status: "active" },
+  { id: 5, name: "David Wilson", email: "david@example.com", phone: "+1 555-567-8901", location: "Miami", lastActive: "1 week ago", status: "inactive" },
+  { id: 6, name: "Sarah Adams", email: "sarah@example.com", phone: "+1 555-678-9012", location: "Denver", lastActive: "3 hours ago", status: "active" },
+  { id: 7, name: "Michael Patel", email: "michael@example.com", phone: "+1 555-789-0123", location: "Seattle", lastActive: "2 days ago", status: "active" },
+  { id: 8, name: "Jennifer Martinez", email: "jennifer@example.com", phone: "+1 555-890-1234", location: "Boston", lastActive: "1 month ago", status: "inactive" },
+];
+
+const activityData = [
+  { name: 'Jan', users: 65 },
+  { name: 'Feb', users: 78 },
+  { name: 'Mar', users: 90 },
+  { name: 'Apr', users: 81 },
+  { name: 'May', users: 95 },
+  { name: 'Jun', users: 110 },
+  { name: 'Jul', users: 129 },
+  { name: 'Aug', users: 140 },
+  { name: 'Sep', users: 155 },
+  { name: 'Oct', users: 170 },
+  { name: 'Nov', users: 188 },
+  { name: 'Dec', users: 205 },
+];
+
+const usageData = [
+  { name: 'Memory Match', value: 35 },
+  { name: 'Word Games', value: 25 },
+  { name: 'Digital Puzzles', value: 20 },
+  { name: 'Art Studio', value: 15 },
+  { name: 'Trivia', value: 5 },
+];
+
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#A569BD'];
 
 const Admin = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const navigate = useNavigate();
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    // In a real app, you would validate credentials against a backend
-    if (email === 'admin@senipy.com' && password === 'admin123') {
-      setIsLoggedIn(true);
-    } else {
-      alert('Invalid credentials. Please try again.');
-    }
-  };
+  // In a real app, this would check if the user is authenticated as an admin
+  // For now, we'll just simulate this check
+  const isAdmin = localStorage.getItem('isAdmin') === 'true';
 
-  if (!isLoggedIn) {
+  if (!isAdmin) {
+    // Redirect non-admin users to login
+    setTimeout(() => navigate('/login'), 2000);
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <DynamicBackground />
-        <div className="w-full max-w-md z-10">
-          <Card className="border-none shadow-xl">
-            <CardHeader>
-              <div className="flex justify-center mb-4">
-                <div className="h-16 w-16 bg-primary rounded-full flex items-center justify-center">
-                  <div className="h-10 w-10 bg-white rounded-full flex items-center justify-center">
-                    <div className="h-5 w-5 bg-secondary rounded-full"></div>
-                  </div>
-                </div>
-              </div>
-              <CardTitle className="text-2xl text-center">SENIPY Admin</CardTitle>
-              <CardDescription className="text-center">
-                Sign in to access the admin dashboard
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleLogin}>
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input 
-                      id="email" 
-                      type="email" 
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="admin@senipy.com" 
-                      required 
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="password">Password</Label>
-                    <Input 
-                      id="password" 
-                      type="password" 
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="••••••••" 
-                      required 
-                    />
-                  </div>
-                  <Button type="submit" className="w-full">
-                    Sign In
-                  </Button>
-                </div>
-              </form>
-            </CardContent>
-            <CardFooter className="flex justify-center">
-              <Link to="/" className="text-sm text-gray-500 hover:text-primary">
-                Return to Home
-              </Link>
-            </CardFooter>
-          </Card>
-        </div>
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-r from-gray-100 to-gray-200">
+        <Card className="w-[400px] shadow-lg">
+          <CardHeader>
+            <CardTitle className="text-center text-xl">Admin Access Required</CardTitle>
+            <CardDescription className="text-center">
+              You do not have permission to access this page.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-col items-center gap-4">
+            <p>Redirecting to login page...</p>
+            <Button onClick={() => navigate('/login')}>
+              Login Now
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
-  // Mock data for the admin panel
-  const users = [
-    { id: 1, name: 'John Doe', email: 'john@example.com', status: 'Active', joined: '2023-05-15' },
-    { id: 2, name: 'Jane Smith', email: 'jane@example.com', status: 'Active', joined: '2023-06-22' },
-    { id: 3, name: 'Robert Johnson', email: 'robert@example.com', status: 'Inactive', joined: '2023-07-10' },
-    { id: 4, name: 'Lisa Brown', email: 'lisa@example.com', status: 'Active', joined: '2023-08-05' },
-  ];
-
-  const downloads = [
-    { id: 1, version: '1.2.3', platform: 'Android', downloads: 1245, released: '2023-09-15' },
-    { id: 2, version: '1.2.2', platform: 'Android', downloads: 3578, released: '2023-08-01' },
-    { id: 3, version: '1.2.1', platform: 'Android', downloads: 2890, released: '2023-07-10' },
-    { id: 4, version: '1.2.0', platform: 'Android', downloads: 4120, released: '2023-06-15' },
-  ];
+  const filteredUsers = usersData.filter(user => 
+    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.email.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="flex h-screen">
-        {/* Sidebar */}
-        <div className="w-64 bg-gray-900 text-white hidden md:block">
-          <div className="p-4 flex items-center gap-2">
-            <div className="h-10 w-10 bg-primary rounded-full flex items-center justify-center">
-              <div className="h-6 w-6 bg-white rounded-full flex items-center justify-center">
-                <div className="h-3 w-3 bg-secondary rounded-full"></div>
-              </div>
+    <div className="min-h-screen bg-gray-100">
+      <header className="bg-white shadow-sm">
+        <div className="container mx-auto px-4 py-3 flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <div className="h-8 w-8 bg-primary rounded-full flex items-center justify-center">
+              <div className="h-4 w-4 bg-white rounded-full"></div>
             </div>
             <span className="text-xl font-bold">SENIPY Admin</span>
           </div>
-          <nav className="mt-8">
-            <div className="px-4 py-2 text-gray-400 text-xs font-semibold">MAIN</div>
-            <a href="#dashboard" className="flex items-center px-4 py-3 bg-gray-800 text-white">
-              <Users className="mr-3 h-5 w-5" />
-              <span>Users</span>
-            </a>
-            <a href="#downloads" className="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-800 transition-colors">
-              <Download className="mr-3 h-5 w-5" />
-              <span>Downloads</span>
-            </a>
-            <a href="#settings" className="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-800 transition-colors">
-              <Settings className="mr-3 h-5 w-5" />
-              <span>Settings</span>
-            </a>
-            <div className="absolute bottom-0 w-64 border-t border-gray-800">
-              <button 
-                onClick={() => setIsLoggedIn(false)} 
-                className="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-800 transition-colors w-full"
-              >
-                <LogOut className="mr-3 h-5 w-5" />
-                <span>Logout</span>
-              </button>
-            </div>
-          </nav>
+          <div className="flex items-center gap-4">
+            <Button variant="outline" onClick={() => navigate('/')}>
+              Back to Website
+            </Button>
+            <Avatar>
+              <AvatarImage src="https://github.com/shadcn.png" />
+              <AvatarFallback>AD</AvatarFallback>
+            </Avatar>
+          </div>
         </div>
+      </header>
 
-        {/* Main content */}
-        <div className="flex-1 overflow-auto">
-          {/* Mobile header */}
-          <div className="md:hidden bg-white p-4 shadow">
-            <div className="flex justify-between items-center">
-              <div className="flex items-center gap-2">
-                <div className="h-8 w-8 bg-primary rounded-full flex items-center justify-center">
-                  <div className="h-4 w-4 bg-white rounded-full"></div>
+      <main className="container mx-auto px-4 py-8">
+        <Tabs defaultValue="dashboard">
+          <TabsList className="mb-8 bg-white border">
+            <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+            <TabsTrigger value="users">Users</TabsTrigger>
+            <TabsTrigger value="content">Content</TabsTrigger>
+            <TabsTrigger value="settings">Settings</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="dashboard">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium text-gray-500">Total Users</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold">2,845</div>
+                  <p className="text-sm text-green-600 mt-2">+12% from last month</p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium text-gray-500">Active Today</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold">482</div>
+                  <p className="text-sm text-green-600 mt-2">+8% from yesterday</p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium text-gray-500">Games Played</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold">18,932</div>
+                  <p className="text-sm text-green-600 mt-2">+25% from last month</p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium text-gray-500">Avg. Session</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold">24m</div>
+                  <p className="text-sm text-green-600 mt-2">+3% from last month</p>
+                </CardContent>
+              </Card>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <Card className="lg:col-span-2">
+                <CardHeader>
+                  <CardTitle>User Growth</CardTitle>
+                  <CardDescription>Monthly user registration over the past year</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-80">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart
+                        data={activityData}
+                        margin={{ top: 20, right: 30, left: 0, bottom: 0 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="name" />
+                        <YAxis />
+                        <Tooltip />
+                        <Bar dataKey="users" fill="#4f46e5" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Game Usage</CardTitle>
+                  <CardDescription>Most popular games by usage</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-80">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={usageData}
+                          cx="50%"
+                          cy="50%"
+                          labelLine={false}
+                          outerRadius={80}
+                          fill="#8884d8"
+                          dataKey="value"
+                          label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                        >
+                          {usageData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                          ))}
+                        </Pie>
+                        <Tooltip />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="users">
+            <Card>
+              <CardHeader>
+                <CardTitle>User Management</CardTitle>
+                <CardDescription>View and manage all registered users</CardDescription>
+                <div className="mt-4">
+                  <Input 
+                    placeholder="Search users..." 
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
                 </div>
-                <span className="font-bold">SENIPY Admin</span>
-              </div>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={() => setIsLoggedIn(false)}
-              >
-                <LogOut className="h-4 w-4 mr-1" /> Logout
-              </Button>
-            </div>
-          </div>
+              </CardHeader>
+              <CardContent>
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Email</TableHead>
+                        <TableHead>Phone</TableHead>
+                        <TableHead>Location</TableHead>
+                        <TableHead>Last Active</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredUsers.map(user => (
+                        <TableRow key={user.id}>
+                          <TableCell className="font-medium">
+                            <div className="flex items-center gap-2">
+                              <Avatar className="h-8 w-8">
+                                <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                              </Avatar>
+                              {user.name}
+                            </div>
+                          </TableCell>
+                          <TableCell>{user.email}</TableCell>
+                          <TableCell>{user.phone}</TableCell>
+                          <TableCell>{user.location}</TableCell>
+                          <TableCell>{user.lastActive}</TableCell>
+                          <TableCell>
+                            <span className={`px-2 py-1 rounded-full text-xs ${
+                              user.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                            }`}>
+                              {user.status}
+                            </span>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex gap-2">
+                              <Button variant="outline" size="sm">Edit</Button>
+                              <Button variant="outline" size="sm" className="text-red-500">Delete</Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-          <div className="p-6">
-            <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center">
-                    <div className="bg-blue-100 p-3 rounded-full mr-4">
-                      <Users className="h-6 w-6 text-blue-600" />
+          <TabsContent value="content">
+            <Card>
+              <CardHeader>
+                <CardTitle>Content Management</CardTitle>
+                <CardDescription>Manage games and application content</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <h3 className="text-lg font-medium">Games</h3>
+                    <Button>Add New Game</Button>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {['Memory Match', 'Word Games', 'Digital Puzzles', 'Art Studio', 'Trivia Challenges'].map((game, i) => (
+                      <Card key={i}>
+                        <CardHeader className="pb-2">
+                          <CardTitle className="text-base">{game}</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="flex justify-between">
+                            <span className="text-sm text-gray-500">Status: Active</span>
+                            <div className="flex gap-2">
+                              <Button variant="outline" size="sm">Edit</Button>
+                              <Button variant="outline" size="sm">Details</Button>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="settings">
+            <Card>
+              <CardHeader>
+                <CardTitle>Admin Settings</CardTitle>
+                <CardDescription>Configure system preferences and permissions</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div>
+                  <h3 className="text-lg font-medium mb-4">General Settings</h3>
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">Site Name</label>
+                        <Input defaultValue="SENIPY Admin Dashboard" />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">Contact Email</label>
+                        <Input defaultValue="senipy08@gmail.com" />
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-gray-500">Total Users</p>
-                      <h3 className="text-2xl font-bold">{users.length}</h3>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Site Description</label>
+                      <Input defaultValue="Admin dashboard for managing SENIPY application" />
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-              
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center">
-                    <div className="bg-green-100 p-3 rounded-full mr-4">
-                      <UserPlus className="h-6 w-6 text-green-600" />
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-medium mb-4">Security Settings</h3>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-medium">Two-Factor Authentication</p>
+                        <p className="text-sm text-gray-500">Increase security by requiring an additional verification step</p>
+                      </div>
+                      <Button variant="outline">Enable</Button>
                     </div>
-                    <div>
-                      <p className="text-gray-500">New Users (Week)</p>
-                      <h3 className="text-2xl font-bold">12</h3>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-              
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center">
-                    <div className="bg-purple-100 p-3 rounded-full mr-4">
-                      <Download className="h-6 w-6 text-purple-600" />
-                    </div>
-                    <div>
-                      <p className="text-gray-500">Total Downloads</p>
-                      <h3 className="text-2xl font-bold">11,833</h3>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-medium">Session Timeout</p>
+                        <p className="text-sm text-gray-500">Automatically log out inactive sessions</p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Input type="number" className="w-24" defaultValue="30" />
+                        <span>minutes</span>
+                      </div>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-            </div>
-            
-            <Tabs defaultValue="users">
-              <TabsList>
-                <TabsTrigger value="users">Users</TabsTrigger>
-                <TabsTrigger value="downloads">Downloads</TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="users" className="mt-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>User Management</CardTitle>
-                    <CardDescription>Manage your app users and their permissions</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="rounded-md overflow-hidden border">
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead>ID</TableHead>
-                            <TableHead>Name</TableHead>
-                            <TableHead>Email</TableHead>
-                            <TableHead>Status</TableHead>
-                            <TableHead>Joined</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {users.map((user) => (
-                            <TableRow key={user.id}>
-                              <TableCell>{user.id}</TableCell>
-                              <TableCell>{user.name}</TableCell>
-                              <TableCell>{user.email}</TableCell>
-                              <TableCell>
-                                <span className={`px-2 py-1 rounded-full text-xs ${
-                                  user.status === 'Active' 
-                                    ? 'bg-green-100 text-green-800' 
-                                    : 'bg-gray-100 text-gray-800'
-                                }`}>
-                                  {user.status}
-                                </span>
-                              </TableCell>
-                              <TableCell>{user.joined}</TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-              
-              <TabsContent value="downloads" className="mt-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>App Downloads</CardTitle>
-                    <CardDescription>Track app downloads across different versions</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="rounded-md overflow-hidden border">
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead>Version</TableHead>
-                            <TableHead>Platform</TableHead>
-                            <TableHead>Downloads</TableHead>
-                            <TableHead>Released</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {downloads.map((download) => (
-                            <TableRow key={download.id}>
-                              <TableCell>{download.version}</TableCell>
-                              <TableCell>{download.platform}</TableCell>
-                              <TableCell>{download.downloads.toLocaleString()}</TableCell>
-                              <TableCell>{download.released}</TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-            </Tabs>
-          </div>
-        </div>
-      </div>
+                </div>
+
+                <div className="pt-6 flex justify-end gap-4">
+                  <Button variant="outline">Cancel</Button>
+                  <Button>Save Changes</Button>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </main>
     </div>
   );
 };

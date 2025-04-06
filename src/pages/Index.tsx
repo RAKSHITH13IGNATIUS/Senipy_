@@ -43,13 +43,13 @@ const Index = () => {
       <section className="pt-28 pb-16 md:pt-36 md:pb-24 px-4 relative z-10">
         <div className="container mx-auto">
           <div className="flex flex-col md:flex-row items-center">
-            <div className="md:w-1/2 animated-element">
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-                Your Gentle Robot <span className="text-primary">Companion</span>
+            <div className="md:w-1/2 animated-element backdrop-blur-sm bg-white/10 p-8 rounded-2xl shadow-2xl">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight text-white">
+                SENIPY <span className="text-primary">AI</span>
               </h1>
-              <p className="text-xl text-gray-600 mb-2">SENIPY</p>
-              <p className="text-lg text-gray-500 mb-8 italic">Maker's of near Future</p>
-              <p className="text-xl text-gray-600 mb-8 max-w-lg">
+              <p className="text-xl text-gray-200 mb-2">SENIPY</p>
+              <p className="text-lg text-gray-300 mb-8 italic">Maker's of near Future</p>
+              <p className="text-xl text-white mb-8 max-w-lg">
                 A friendly assistant designed to simplify daily tasks and enhance well-being, 
                 particularly for seniors and those seeking an accessible technology experience.
               </p>
@@ -57,15 +57,17 @@ const Index = () => {
                 <Button size="lg" className="bg-primary hover:bg-primary/90 text-lg">
                   Get Started
                 </Button>
-                <Button size="lg" variant="outline" className="text-lg">
-                  Learn More
-                </Button>
+                <Link to="/games">
+                  <Button size="lg" variant="outline" className="text-lg border-white text-white hover:bg-white/20">
+                    Explore Games
+                  </Button>
+                </Link>
               </div>
             </div>
             <div className="md:w-1/2 mt-12 md:mt-0 animated-element" style={{ animationDelay: '200ms' }}>
               <div className="relative">
-                <div className="w-72 h-72 md:w-96 md:h-96 mx-auto bg-primary/10 rounded-full flex items-center justify-center">
-                  <div className="w-48 h-48 md:w-64 md:h-64 bg-primary/20 rounded-full flex items-center justify-center animate-pulse" style={{ animationDuration: '4s' }}>
+                <div className="w-72 h-72 md:w-96 md:h-96 mx-auto bg-primary/30 backdrop-blur-md rounded-full flex items-center justify-center">
+                  <div className="w-48 h-48 md:w-64 md:h-64 bg-primary/40 rounded-full flex items-center justify-center animate-pulse" style={{ animationDuration: '4s' }}>
                     {/* Robot illustration */}
                     <div className="w-32 h-40 md:w-40 md:h-48 relative animate-float" style={{ animationDuration: '6s' }}>
                       {/* Head */}
@@ -108,7 +110,7 @@ const Index = () => {
       </section>
       
       {/* Features Section */}
-      <section id="features" className="py-16 bg-gray-50 relative z-10">
+      <section id="features" className="py-16 bg-gray-50/80 backdrop-blur-sm relative z-10">
         <div className="container mx-auto px-4">
           <h2 className="section-title text-center">Key Features</h2>
           <p className="section-description text-center">
@@ -158,7 +160,7 @@ const Index = () => {
       {/* Call to Action */}
       <section className="py-16 bg-gradient-to-r from-primary to-blue-600 text-white relative z-10">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6 animated-element">Ready to Welcome Your Robot Companion?</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-6 animated-element">Ready to Welcome Your SENIPY Assistant?</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto animated-element" style={{ animationDelay: '100ms' }}>
             Join thousands of users who have discovered a more accessible way to interact with technology.
           </p>
@@ -169,6 +171,71 @@ const Index = () => {
             <button onClick={() => document.getElementById('download')?.scrollIntoView({ behavior: 'smooth' })} className="bg-transparent border-2 border-white hover:bg-white/10 transition-colors px-8 py-3 rounded-full font-bold text-lg">
               Download App
             </button>
+          </div>
+        </div>
+      </section>
+      
+      {/* Games Section */}
+      <section className="py-16 bg-white/80 backdrop-blur-sm relative z-10">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="section-title">Featured Games</h2>
+            <p className="section-description">
+              Explore our collection of interactive games designed to entertain and stimulate cognitive abilities
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="game-card bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
+              <div className="h-48 bg-blue-100 relative">
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Brain size={64} className="text-blue-500" />
+                </div>
+              </div>
+              <div className="p-6">
+                <h3 className="text-xl font-bold mb-2">Memory Match</h3>
+                <p className="text-gray-600 mb-4">Test and improve your memory by matching pairs of cards.</p>
+                <Link to="/games">
+                  <Button className="w-full">Play Now</Button>
+                </Link>
+              </div>
+            </div>
+            
+            <div className="game-card bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
+              <div className="h-48 bg-purple-100 relative">
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Puzzle size={64} className="text-purple-500" />
+                </div>
+              </div>
+              <div className="p-6">
+                <h3 className="text-xl font-bold mb-2">Digital Puzzles</h3>
+                <p className="text-gray-600 mb-4">Enjoy classic puzzles in digital format, from jigsaw to sudoku.</p>
+                <Link to="/games">
+                  <Button className="w-full">Play Now</Button>
+                </Link>
+              </div>
+            </div>
+            
+            <div className="game-card bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
+              <div className="h-48 bg-green-100 relative">
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <BookOpen size={64} className="text-green-500" />
+                </div>
+              </div>
+              <div className="p-6">
+                <h3 className="text-xl font-bold mb-2">Word Games</h3>
+                <p className="text-gray-600 mb-4">Expand your vocabulary and keep your mind sharp with word puzzles.</p>
+                <Link to="/games">
+                  <Button className="w-full">Play Now</Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+          
+          <div className="text-center mt-12">
+            <Link to="/games">
+              <Button size="lg" variant="outline">View All Games</Button>
+            </Link>
           </div>
         </div>
       </section>
@@ -197,6 +264,7 @@ const Index = () => {
               <ul className="space-y-2">
                 <li><Link to="/" className="text-gray-300 hover:text-white transition-colors">Home</Link></li>
                 <li><button onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })} className="text-gray-300 hover:text-white transition-colors">Features</button></li>
+                <li><Link to="/games" className="text-gray-300 hover:text-white transition-colors">Games</Link></li>
                 <li><Link to="/login" className="text-gray-300 hover:text-white transition-colors">Login</Link></li>
                 <li><Link to="/signup" className="text-gray-300 hover:text-white transition-colors">Sign Up</Link></li>
               </ul>
@@ -222,3 +290,4 @@ const Index = () => {
 };
 
 export default Index;
+
