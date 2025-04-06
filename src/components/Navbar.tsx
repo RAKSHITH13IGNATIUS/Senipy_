@@ -93,10 +93,6 @@ const Navbar: React.FC = () => {
                 </Link>
               </>
             )}
-            
-            <Link to="/admin" className="text-lg font-medium text-white hover:text-primary transition-colors">
-              Admin
-            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -127,9 +123,6 @@ const Navbar: React.FC = () => {
             >
               Download
             </button>
-            <Link to="/admin" className="text-lg font-medium py-2 text-white hover:text-primary transition-colors">
-              Admin
-            </Link>
             <div className="pt-2 flex flex-col space-y-3">
               {isLoggedIn ? (
                 <button 

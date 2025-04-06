@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import FeatureCard from '@/components/FeatureCard';
@@ -290,4 +289,3 @@ const Index = () => {
 };
 
 export default Index;
-
