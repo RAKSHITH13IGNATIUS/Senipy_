@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import FeatureCard from '@/components/FeatureCard';
 import DownloadSection from '@/components/DownloadSection';
-import { Mic, GamepadIcon, ShoppingCart, Wallet, Users } from 'lucide-react';
+import { Mic, GamepadIcon, ShoppingCart, Wallet, Users, Brain, Puzzle, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import DynamicBackground from '@/components/DynamicBackground';
