@@ -11,7 +11,6 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { user, loading } = useAuth();
 
   if (loading) {
-    // You can add a loading spinner here if desired
     return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
   }
 

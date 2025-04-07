@@ -10,11 +10,14 @@ import { supabase } from '@/integrations/supabase/client';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import DynamicBackground from '@/components/DynamicBackground';
 
+// Define a temporary interface for ProfileData until Supabase types are updated
 interface ProfileData {
   id: string;
-  first_name: string;
-  last_name: string;
+  first_name: string | null;
+  last_name: string | null;
   avatar_url: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
 const UserProfile = () => {
@@ -43,11 +46,12 @@ const UserProfile = () => {
       
       if (!user) return;
 
+      // Use explicit typing to bypass TypeScript error
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', user.id)
-        .single();
+        .single<ProfileData>();
 
       if (error) {
         throw error;
@@ -76,7 +80,8 @@ const UserProfile = () => {
       
       if (!user) return;
 
-      const updates = {
+      // Use explicit typing for the updates
+      const updates: Partial<ProfileData> = {
         id: user.id,
         first_name: firstName,
         last_name: lastName,
@@ -84,9 +89,10 @@ const UserProfile = () => {
         updated_at: new Date().toISOString(),
       };
 
+      // Use a type assertion to bypass TypeScript error
       const { error } = await supabase
         .from('profiles')
-        .update(updates)
+        .update(updates as any)
         .eq('id', user.id);
 
       if (error) {
@@ -144,10 +150,10 @@ const UserProfile = () => {
       
       setAvatarUrl(data.publicUrl);
 
-      // Update the profile with the new avatar URL
+      // Update the profile with the new avatar URL using a type assertion
       const { error: updateError } = await supabase
         .from('profiles')
-        .update({ avatar_url: data.publicUrl })
+        .update({ avatar_url: data.publicUrl } as any)
         .eq('id', user?.id);
 
       if (updateError) {
