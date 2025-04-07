@@ -1,19 +1,26 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Menu, X, LogOut } from 'lucide-react';
+import { Menu, X, LogOut, User } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check if user is logged in
-    const user = localStorage.getItem('user');
-    setIsLoggedIn(!!user);
-
     const handleScroll = () => {
       if (window.scrollY > 10) {
         setIsScrolled(true);
@@ -26,10 +33,8 @@ const Navbar: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem('user');
-    setIsLoggedIn(false);
-    navigate('/');
+  const handleLogout = async () => {
+    await signOut();
   };
 
   const scrollToSection = (id: string) => {
@@ -38,6 +43,17 @@ const Navbar: React.FC = () => {
       element.scrollIntoView({ behavior: 'smooth' });
       setIsMenuOpen(false);
     }
+  };
+
+  // Get user's initials for avatar
+  const getUserInitials = () => {
+    if (!user) return '';
+    
+    const meta = user.user_metadata;
+    const firstName = meta?.first_name || '';
+    const lastName = meta?.last_name || '';
+    
+    return (firstName.charAt(0) + lastName.charAt(0)).toUpperCase();
   };
 
   return (
@@ -75,14 +91,32 @@ const Navbar: React.FC = () => {
               Download
             </button>
             
-            {isLoggedIn ? (
-              <button 
-                onClick={handleLogout} 
-                className="flex items-center gap-2 text-lg font-medium text-white hover:text-primary transition-colors"
-              >
-                <LogOut size={20} />
-                Logout
-              </button>
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                    <Avatar>
+                      <AvatarImage src={user.user_metadata?.avatar_url || ''} />
+                      <AvatarFallback className="bg-primary text-white">
+                        {getUserInitials()}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="end">
+                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => navigate('/profile')}>
+                    <User className="mr-2 h-4 w-4" />
+                    <span>Profile</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             ) : (
               <>
                 <Link to="/login" className="btn-secondary !py-2 !px-5">
@@ -124,14 +158,20 @@ const Navbar: React.FC = () => {
               Download
             </button>
             <div className="pt-2 flex flex-col space-y-3">
-              {isLoggedIn ? (
-                <button 
-                  onClick={handleLogout}
-                  className="btn-secondary flex items-center justify-center gap-2"
-                >
-                  <LogOut size={20} />
-                  Logout
-                </button>
+              {user ? (
+                <>
+                  <Link to="/profile" className="btn-secondary flex items-center justify-center gap-2">
+                    <User size={20} />
+                    Profile
+                  </Link>
+                  <button 
+                    onClick={handleLogout}
+                    className="btn-secondary flex items-center justify-center gap-2"
+                  >
+                    <LogOut size={20} />
+                    Logout
+                  </button>
+                </>
               ) : (
                 <>
                   <Link to="/login" className="btn-secondary">
