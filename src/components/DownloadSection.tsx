@@ -50,6 +50,19 @@ const DownloadSection: React.FC = () => {
             <p className="mt-8 text-gray-500 text-center">
               Need help installing? Contact our support team at senipy08@gmail.com
             </p>
+            
+            <div className="mt-8 pt-4 border-t border-gray-100">
+              <a 
+                href="#features" 
+                className="btn-secondary flex items-center gap-2 px-6 py-3 rounded-full bg-secondary text-white hover:bg-secondary/90 shadow-md transform hover:scale-105 transition-all duration-300"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+              >
+                Learn More
+              </a>
+            </div>
           </div>
         </div>
       </div>
