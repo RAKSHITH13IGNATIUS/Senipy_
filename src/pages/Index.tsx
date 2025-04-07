@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import FeatureCard from '@/components/FeatureCard';
@@ -233,7 +234,7 @@ const Index = () => {
           
           <div className="text-center mt-12">
             <Link to="/games">
-              <Button size="lg" variant="outline">View All Games</Button>
+              <Button size="lg" variant="outline" className="bg-secondary text-white hover:bg-secondary/80">View All Games</Button>
             </Link>
           </div>
         </div>
