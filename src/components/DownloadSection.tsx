@@ -4,14 +4,14 @@ import { ArrowDown, Download } from 'lucide-react';
 
 const DownloadSection: React.FC = () => {
   return (
-    <section id="download" className="py-16 bg-gradient-to-b from-white to-blue-50">
+    <section id="download" className="py-16 bg-gradient-to-b from-primary/20 to-blue-100">
       <div className="container mx-auto px-4">
-        <h2 className="section-title text-center">Download Our App</h2>
-        <p className="section-description text-center">
+        <h2 className="section-title text-center text-3xl md:text-4xl font-bold mb-4">Download Our App</h2>
+        <p className="section-description text-center text-xl mb-8">
           Get started with your SENIPY AI today. It's free and easy to install!
         </p>
         
-        <div className="max-w-3xl mx-auto mt-12 bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
+        <div className="max-w-3xl mx-auto mt-12 bg-white rounded-3xl shadow-xl p-8 border border-gray-100 transform hover:-translate-y-1 transition-transform duration-300">
           <div className="flex flex-col items-center relative">
             {/* Animated arrows pointing to download button */}
             <div className="absolute -top-14 left-1/2 transform -translate-x-1/2 animate-bounce hidden md:block">
@@ -37,9 +37,11 @@ const DownloadSection: React.FC = () => {
             </div>
             
             <a 
-              href="/downloads/senipy.apk" 
-              className="btn-primary flex items-center gap-2 text-xl" 
+              href="https://www.dropbox.com/scl/fi/k9n5w4smbrr5oscq5oxom/_Senipy_18707334.apk?rlkey=uh7yxv48fyxvh86ztuvstsfql&st=ybyim5tf&dl=1" 
+              className="btn-primary flex items-center gap-2 text-xl px-8 py-4 rounded-full bg-primary text-white hover:bg-primary/90 shadow-lg transform hover:scale-105 transition-all duration-300" 
               download="senipy.apk"
+              target="_blank"
+              rel="noopener noreferrer"
             >
               <Download size={24} />
               Download APK
