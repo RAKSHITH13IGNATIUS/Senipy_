@@ -13,6 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import BotLogo from './BotLogo';
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -68,11 +69,7 @@ const Navbar: React.FC = () => {
         <div className="flex justify-between items-center">
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <div className="h-10 w-10 bg-primary rounded-full flex items-center justify-center">
-              <div className="h-6 w-6 bg-white rounded-full flex items-center justify-center">
-                <div className="h-3 w-3 bg-secondary rounded-full"></div>
-              </div>
-            </div>
+            <BotLogo />
             <span className="text-xl font-bold text-white">SENIPY</span>
           </div>
 
