@@ -10,10 +10,11 @@ import DynamicBackground from '@/components/DynamicBackground';
 import { useAuth } from '@/contexts/AuthContext';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Phone } from "lucide-react";
+import { Phone, AlertCircle } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from '@/integrations/supabase/client';
 import BotLogo from '@/components/BotLogo';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -56,11 +57,19 @@ const Login = () => {
       });
 
       if (error) {
-        toast({
-          title: "Error sending OTP",
-          description: error.message,
-          variant: "destructive"
-        });
+        if (error.message.includes('phone_provider_disabled') || error.message.includes('Unsupported phone provider')) {
+          toast({
+            title: "SMS Authentication Not Available",
+            description: "SMS authentication needs to be enabled in Supabase project settings",
+            variant: "destructive"
+          });
+        } else {
+          toast({
+            title: "Error sending OTP",
+            description: error.message,
+            variant: "destructive"
+          });
+        }
       } else {
         setShowOtpInput(true);
         toast({
@@ -223,6 +232,14 @@ const Login = () => {
               </TabsContent>
               
               <TabsContent value="phone" className="animate-fade-in">
+                <Alert className="mb-6 border-amber-300 bg-amber-50">
+                  <AlertCircle className="h-4 w-4 text-amber-600" />
+                  <AlertTitle className="text-amber-800">SMS Authentication Notice</AlertTitle>
+                  <AlertDescription className="text-amber-700">
+                    SMS authentication requires additional configuration in your Supabase project settings.
+                  </AlertDescription>
+                </Alert>
+                
                 {!showOtpInput ? (
                   <form onSubmit={handleSendOtp}>
                     <div className="space-y-6">
