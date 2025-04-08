@@ -5,12 +5,12 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { Menu } from "lucide-react";
-import { useMobile } from "@/hooks/use-mobile";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export const Navbar = () => {
   const { user, signOut } = useAuth();
   const [scrolled, setScrolled] = useState(false);
-  const isMobile = useMobile();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const handleScroll = () => {
