@@ -67,7 +67,7 @@ export const Navbar = () => {
   return (
     <nav
       className={`fixed w-full z-50 py-3 transition-all duration-300 ${
-        scrolled ? "bg-background/90 backdrop-blur-md shadow-sm" : "bg-transparent"
+        scrolled ? "bg-background/90 backdrop-blur-md shadow-sm" : "bg-background/70 backdrop-blur-sm"
       }`}
     >
       <div className="container mx-auto px-4 flex justify-between items-center">
