@@ -13,6 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Phone } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from '@/integrations/supabase/client';
+import BotLogo from '@/components/BotLogo';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -117,42 +118,50 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-blue-100 to-purple-100">
       <DynamicBackground />
-      <div className="w-full max-w-md animated-element z-10">
+      <div className="w-full max-w-md z-10 animate-fade-in">
         <div className="text-center mb-8">
-          <div className="h-16 w-16 bg-primary rounded-full mx-auto flex items-center justify-center mb-4">
-            <div className="h-10 w-10 bg-white rounded-full flex items-center justify-center">
-              <div className="h-5 w-5 bg-secondary rounded-full"></div>
-            </div>
+          <div className="h-16 w-16 bg-primary rounded-full mx-auto flex items-center justify-center mb-4 animate-pulse">
+            <BotLogo />
           </div>
-          <h1 className="text-3xl font-bold text-white">Welcome Back!</h1>
-          <p className="text-blue-100 mt-2">Log in to your SENIPY account</p>
+          <h1 className="text-3xl font-bold text-primary">Welcome Back!</h1>
+          <p className="text-blue-600 mt-2">Log in to your SENIPY account</p>
         </div>
         
-        <Card className="border-none shadow-xl">
+        <Card className="border-none shadow-xl hover:shadow-2xl transition-all duration-300 bg-white/90 backdrop-blur-sm">
           <CardHeader>
-            <CardTitle className="text-2xl text-center">Login</CardTitle>
+            <CardTitle className="text-2xl text-center text-primary">Login</CardTitle>
             <CardDescription className="text-center">
               Choose a login method to access your account
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="email" className="w-full">
-              <TabsList className="grid grid-cols-2 mb-6">
-                <TabsTrigger value="email">Email</TabsTrigger>
-                <TabsTrigger value="phone">Phone</TabsTrigger>
+              <TabsList className="grid grid-cols-2 mb-6 bg-primary/10">
+                <TabsTrigger 
+                  value="email" 
+                  className="data-[state=active]:bg-primary data-[state=active]:text-white transition-all duration-300"
+                >
+                  Email
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="phone" 
+                  className="data-[state=active]:bg-primary data-[state=active]:text-white transition-all duration-300"
+                >
+                  Phone
+                </TabsTrigger>
               </TabsList>
               
-              <TabsContent value="email">
+              <TabsContent value="email" className="animate-fade-in">
                 <form onSubmit={handleLogin}>
                   <div className="space-y-6">
                     <div className="space-y-2">
-                      <Label htmlFor="email" className="text-lg">Email</Label>
+                      <Label htmlFor="email" className="text-lg text-primary">Email</Label>
                       <Input 
                         id="email" 
                         type="email" 
-                        className="input-field" 
+                        className="input-field focus:ring-primary/50 transition-all duration-300" 
                         placeholder="Enter your email" 
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
@@ -161,15 +170,15 @@ const Login = () => {
                     </div>
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
-                        <Label htmlFor="password" className="text-lg">Password</Label>
-                        <Link to="/forgot-password" className="text-sm text-primary hover:underline">
+                        <Label htmlFor="password" className="text-lg text-primary">Password</Label>
+                        <Link to="/forgot-password" className="text-sm text-primary hover:underline transition-colors duration-300">
                           Forgot password?
                         </Link>
                       </div>
                       <Input 
                         id="password" 
                         type="password" 
-                        className="input-field" 
+                        className="input-field focus:ring-primary/50 transition-all duration-300" 
                         placeholder="Enter your password" 
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
@@ -178,7 +187,7 @@ const Login = () => {
                     </div>
                     <Button 
                       type="submit" 
-                      className="w-full text-lg py-6 bg-primary hover:bg-primary/90"
+                      className="w-full text-lg py-6 bg-primary hover:bg-primary/90 transform hover:scale-105 transition-all duration-300"
                       disabled={loading}
                     >
                       {loading ? "Logging in..." : "Log In"}
@@ -199,7 +208,7 @@ const Login = () => {
                       <Button 
                         type="button" 
                         variant="outline" 
-                        className="w-full py-6"
+                        className="w-full py-6 hover:border-primary hover:bg-primary/5 transform hover:scale-105 transition-all duration-300"
                         onClick={handleGitHubLogin}
                         disabled={loading}
                       >
@@ -213,18 +222,18 @@ const Login = () => {
                 </form>
               </TabsContent>
               
-              <TabsContent value="phone">
+              <TabsContent value="phone" className="animate-fade-in">
                 {!showOtpInput ? (
                   <form onSubmit={handleSendOtp}>
                     <div className="space-y-6">
                       <div className="space-y-2">
-                        <Label htmlFor="phone" className="text-lg">Phone Number</Label>
+                        <Label htmlFor="phone" className="text-lg text-primary">Phone Number</Label>
                         <div className="flex items-center">
-                          <Phone className="mr-2 h-5 w-5 text-gray-500" />
+                          <Phone className="mr-2 h-5 w-5 text-primary" />
                           <Input 
                             id="phone" 
                             type="tel"
-                            className="input-field" 
+                            className="input-field focus:ring-primary/50 transition-all duration-300" 
                             placeholder="+91 9353152727" 
                             value={phoneNumber}
                             onChange={(e) => setPhoneNumber(e.target.value)}
@@ -237,7 +246,7 @@ const Login = () => {
                       </div>
                       <Button 
                         type="submit" 
-                        className="w-full text-lg py-6 bg-primary hover:bg-primary/90"
+                        className="w-full text-lg py-6 bg-primary hover:bg-primary/90 transform hover:scale-105 transition-all duration-300"
                         disabled={loading}
                       >
                         {loading ? "Sending OTP..." : "Send OTP"}
@@ -245,10 +254,10 @@ const Login = () => {
                     </div>
                   </form>
                 ) : (
-                  <form onSubmit={handleVerifyOtp}>
+                  <form onSubmit={handleVerifyOtp} className="animate-fade-in">
                     <div className="space-y-6">
                       <div className="space-y-2">
-                        <Label htmlFor="otp" className="text-lg">Enter OTP</Label>
+                        <Label htmlFor="otp" className="text-lg text-primary">Enter OTP</Label>
                         <div className="flex justify-center my-4">
                           <InputOTP 
                             maxLength={6}
@@ -257,7 +266,12 @@ const Login = () => {
                             render={({ slots }) => (
                               <InputOTPGroup>
                                 {slots.map((slot, index) => (
-                                  <InputOTPSlot key={index} {...slot} index={index} />
+                                  <InputOTPSlot 
+                                    key={index} 
+                                    {...slot} 
+                                    index={index} 
+                                    className="border-primary/30 focus:border-primary focus:ring-primary/20 transition-all duration-300"
+                                  />
                                 ))}
                               </InputOTPGroup>
                             )}
@@ -270,7 +284,7 @@ const Login = () => {
                       <div className="flex flex-col space-y-3">
                         <Button 
                           type="submit" 
-                          className="w-full text-lg py-6 bg-primary hover:bg-primary/90"
+                          className="w-full text-lg py-6 bg-primary hover:bg-primary/90 transform hover:scale-105 transition-all duration-300"
                           disabled={loading}
                         >
                           {loading ? "Verifying..." : "Verify & Login"}
@@ -278,7 +292,7 @@ const Login = () => {
                         <Button 
                           type="button"
                           variant="outline"
-                          className="w-full"
+                          className="w-full hover:border-primary hover:bg-primary/5 transition-all duration-300"
                           onClick={() => setShowOtpInput(false)}
                         >
                           Change Phone Number
@@ -293,11 +307,11 @@ const Login = () => {
           <CardFooter className="flex-col space-y-4">
             <div className="text-center">
               <span>Don't have an account? </span>
-              <Link to="/signup" className="text-primary hover:underline font-medium">
+              <Link to="/signup" className="text-primary hover:underline font-medium transition-all duration-300 hover:text-primary/80">
                 Sign up
               </Link>
             </div>
-            <Link to="/" className="text-gray-500 hover:text-primary text-sm text-center">
+            <Link to="/" className="text-gray-500 hover:text-primary text-sm text-center transition-colors duration-300">
               Return to Home
             </Link>
           </CardFooter>
