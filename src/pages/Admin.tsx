@@ -1,6 +1,8 @@
-import React from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { Navbar } from '@/components/Navbar';
 import DynamicBackground from '@/components/DynamicBackground';
+import { useNavigate } from 'react-router-dom';
 import {
   Table,
   TableBody,

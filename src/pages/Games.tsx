@@ -1,6 +1,7 @@
 import React from 'react';
 import { Navbar } from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import DynamicBackground from '@/components/DynamicBackground';
 import { Brain, BookOpen, Puzzle, PenTool, Trophy, Home } from 'lucide-react';
