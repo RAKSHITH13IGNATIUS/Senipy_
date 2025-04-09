@@ -10,15 +10,32 @@ import DynamicBackground from '@/components/DynamicBackground';
 import { useAuth } from '@/contexts/AuthContext';
 import { Separator } from "@/components/ui/separator";
 import BotLogo from '@/components/BotLogo';
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { toast } from "@/hooks/use-toast";
+import { Check, Loader, Mail, Smartphone } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Signup = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [agreedToTerms, setAgreedToTerms] = useState(false);
-  const { signUp, signInWithGoogle, signInWithGitHub, user, loading } = useAuth();
+  const [showOTP, setShowOTP] = useState(false);
+  const [verificationCode, setVerificationCode] = useState('');
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [verificationType, setVerificationType] = useState<'email' | 'phone'>('email');
+  const { signUp, signInWithGitHub, user, loading } = useAuth();
   const navigate = useNavigate();
+
+  const otpForm = useForm({
+    defaultValues: {
+      otp: "",
+    },
+  });
 
   useEffect(() => {
     // Redirect if user is already logged in
@@ -27,18 +44,121 @@ const Signup = () => {
     }
   }, [user, navigate]);
 
+  const sendVerificationCode = () => {
+    // In a real app, this would send an OTP to the email or phone
+    // For demo purposes, we just set a fixed code
+    setVerificationCode("123456");
+    setShowOTP(true);
+    
+    toast({
+      title: "Verification Code Sent",
+      description: verificationType === 'email' 
+        ? `A verification code has been sent to ${email}` 
+        : `A verification code has been sent to ${phone}`,
+    });
+  };
+
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!agreedToTerms) {
+      toast({
+        title: "Terms Agreement Required",
+        description: "Please agree to the terms and conditions to continue",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // First step - send verification code
+    if (!showOTP) {
+      // Validate input
+      if (verificationType === 'email') {
+        if (!email) {
+          toast({
+            title: "Email Required",
+            description: "Please enter your email address",
+            variant: "destructive"
+          });
+          return;
+        }
+      } else {
+        if (!phone) {
+          toast({
+            title: "Phone Number Required",
+            description: "Please enter your phone number",
+            variant: "destructive"
+          });
+          return;
+        }
+      }
+      
+      if (!password) {
+        toast({
+          title: "Password Required",
+          description: "Please create a password",
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      sendVerificationCode();
       return;
     }
     
-    await signUp(email, password, firstName, lastName);
+    // Second step - verify OTP and complete signup
+    try {
+      const otpValue = otpForm.getValues().otp;
+      if (otpValue !== verificationCode) {
+        toast({
+          title: "Invalid Code",
+          description: "The verification code you entered is incorrect",
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      setIsVerifying(true);
+      
+      // Complete sign-up process
+      if (verificationType === 'email') {
+        await signUp(email, password, firstName, lastName);
+      } else {
+        // For phone signup, you'd need to implement this in the auth context
+        // For now, we'll just show a message
+        toast({
+          title: "Phone Authentication",
+          description: "Phone authentication is currently in development",
+        });
+        setIsVerifying(false);
+        return;
+      }
+      
+      toast({
+        title: "Verification Successful",
+        description: "Your account has been created successfully",
+      });
+      
+      // Navigate to login
+      navigate('/login');
+    } catch (error: any) {
+      toast({
+        title: "Registration Failed",
+        description: error.message || "An error occurred during registration",
+        variant: "destructive"
+      });
+    } finally {
+      setIsVerifying(false);
+    }
   };
 
   const handleGitHubLogin = async () => {
     await signInWithGitHub();
+  };
+
+  const resetOTPProcess = () => {
+    setShowOTP(false);
+    otpForm.reset();
   };
 
   return (
@@ -57,116 +177,205 @@ const Signup = () => {
           <CardHeader>
             <CardTitle className="text-2xl text-center text-primary">Sign Up</CardTitle>
             <CardDescription className="text-center">
-              Enter your details to create your account
+              {showOTP 
+                ? "Enter the verification code to continue" 
+                : "Enter your details to create your account"}
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSignup} className="transition-all">
-              <div className="space-y-6">
-                <div className="grid grid-cols-2 gap-4">
+            {!showOTP ? (
+              <form onSubmit={handleSignup} className="transition-all">
+                <div className="space-y-6">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="firstName" className="text-lg text-primary">First Name</Label>
+                      <Input 
+                        id="firstName" 
+                        className="input-field focus:ring-primary/50 transition-all duration-300" 
+                        placeholder="First name" 
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="lastName" className="text-lg text-primary">Last Name</Label>
+                      <Input 
+                        id="lastName" 
+                        className="input-field focus:ring-primary/50 transition-all duration-300" 
+                        placeholder="Last name" 
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                        required
+                      />
+                    </div>
+                  </div>
+                  
+                  <Tabs defaultValue="email" onValueChange={(value) => setVerificationType(value as 'email' | 'phone')}>
+                    <TabsList className="grid w-full grid-cols-2 mb-2">
+                      <TabsTrigger value="email" className="text-sm">Email</TabsTrigger>
+                      <TabsTrigger value="phone" className="text-sm">Phone</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="email" className="space-y-2">
+                      <Label htmlFor="email" className="text-lg text-primary">Email</Label>
+                      <Input 
+                        id="email" 
+                        type="email" 
+                        className="input-field focus:ring-primary/50 transition-all duration-300" 
+                        placeholder="Enter your email" 
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                      />
+                    </TabsContent>
+                    <TabsContent value="phone" className="space-y-2">
+                      <Label htmlFor="phone" className="text-lg text-primary">Phone Number</Label>
+                      <Input 
+                        id="phone" 
+                        type="tel" 
+                        className="input-field focus:ring-primary/50 transition-all duration-300" 
+                        placeholder="Enter your phone number" 
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                      />
+                    </TabsContent>
+                  </Tabs>
+                  
                   <div className="space-y-2">
-                    <Label htmlFor="firstName" className="text-lg text-primary">First Name</Label>
+                    <Label htmlFor="password" className="text-lg text-primary">Password</Label>
                     <Input 
-                      id="firstName" 
+                      id="password" 
+                      type="password" 
                       className="input-field focus:ring-primary/50 transition-all duration-300" 
-                      placeholder="First name" 
-                      value={firstName}
-                      onChange={(e) => setFirstName(e.target.value)}
+                      placeholder="Create a password" 
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                       required
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="lastName" className="text-lg text-primary">Last Name</Label>
-                    <Input 
-                      id="lastName" 
-                      className="input-field focus:ring-primary/50 transition-all duration-300" 
-                      placeholder="Last name" 
-                      value={lastName}
-                      onChange={(e) => setLastName(e.target.value)}
-                      required
+                  
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      id="terms" 
+                      checked={agreedToTerms}
+                      onCheckedChange={(checked) => setAgreedToTerms(checked as boolean)}
+                      className="data-[state=checked]:bg-primary data-[state=checked]:text-white"
                     />
+                    <label
+                      htmlFor="terms"
+                      className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      I agree to the{" "}
+                      <Link to="/terms" className="text-primary hover:underline">
+                        terms and conditions
+                      </Link>
+                    </label>
                   </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="email" className="text-lg text-primary">Email</Label>
-                  <Input 
-                    id="email" 
-                    type="email" 
-                    className="input-field focus:ring-primary/50 transition-all duration-300" 
-                    placeholder="Enter your email" 
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="password" className="text-lg text-primary">Password</Label>
-                  <Input 
-                    id="password" 
-                    type="password" 
-                    className="input-field focus:ring-primary/50 transition-all duration-300" 
-                    placeholder="Create a password" 
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                  />
-                </div>
-                
-                <div className="flex items-center space-x-2">
-                  <Checkbox 
-                    id="terms" 
-                    checked={agreedToTerms}
-                    onCheckedChange={(checked) => setAgreedToTerms(checked as boolean)}
-                    className="data-[state=checked]:bg-primary data-[state=checked]:text-white"
-                  />
-                  <label
-                    htmlFor="terms"
-                    className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                  >
-                    I agree to the{" "}
-                    <Link to="/terms" className="text-primary hover:underline">
-                      terms and conditions
-                    </Link>
-                  </label>
-                </div>
-                
-                <Button 
-                  type="submit" 
-                  className="w-full text-lg py-6 bg-primary hover:bg-primary/90 transform hover:scale-105 transition-all duration-300"
-                  disabled={loading || !agreedToTerms}
-                >
-                  {loading ? "Creating Account..." : "Create Account"}
-                </Button>
-
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <Separator className="w-full" />
-                  </div>
-                  <div className="relative flex justify-center">
-                    <span className="bg-card px-2 text-muted-foreground">
-                      Or continue with
-                    </span>
-                  </div>
-                </div>
-
-                <div className="flex flex-col space-y-3">
+                  
                   <Button 
-                    type="button" 
-                    variant="outline" 
-                    className="w-full py-6 hover:border-primary hover:bg-primary/5 transform hover:scale-105 transition-all duration-300"
-                    onClick={handleGitHubLogin}
-                    disabled={loading}
+                    type="submit" 
+                    className="w-full text-lg py-6 bg-primary hover:bg-primary/90 transform hover:scale-105 transition-all duration-300"
+                    disabled={loading || !agreedToTerms}
                   >
-                    <svg className="mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                      <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                    </svg>
-                    GitHub
+                    {loading ? "Processing..." : "Continue"}
                   </Button>
+
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                      <Separator className="w-full" />
+                    </div>
+                    <div className="relative flex justify-center">
+                      <span className="bg-card px-2 text-muted-foreground">
+                        Or continue with
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col space-y-3">
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      className="w-full py-6 hover:border-primary hover:bg-primary/5 transform hover:scale-105 transition-all duration-300"
+                      onClick={handleGitHubLogin}
+                      disabled={loading}
+                    >
+                      <svg className="mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                      </svg>
+                      GitHub
+                    </Button>
+                  </div>
+                </div>
+              </form>
+            ) : (
+              <div className="space-y-6">
+                <div className="flex justify-center items-center space-x-2 mb-4">
+                  <div className="bg-primary/10 p-2 rounded-full">
+                    {verificationType === 'email' ? (
+                      <Mail className="h-6 w-6 text-primary" />
+                    ) : (
+                      <Smartphone className="h-6 w-6 text-primary" />
+                    )}
+                  </div>
+                  <p className="text-sm text-gray-600">
+                    Verification code sent to {verificationType === 'email' ? email : phone}
+                  </p>
+                </div>
+                
+                <Form {...otpForm}>
+                  <form onSubmit={handleSignup} className="space-y-6">
+                    <FormField
+                      control={otpForm.control}
+                      name="otp"
+                      render={({ field }) => (
+                        <FormItem className="space-y-3">
+                          <FormLabel className="text-center block">Verification Code</FormLabel>
+                          <FormControl>
+                            <InputOTP maxLength={6} {...field}>
+                              <InputOTPGroup>
+                                <InputOTPSlot index={0} className="border-primary/30" />
+                                <InputOTPSlot index={1} className="border-primary/30" />
+                                <InputOTPSlot index={2} className="border-primary/30" />
+                                <InputOTPSlot index={3} className="border-primary/30" />
+                                <InputOTPSlot index={4} className="border-primary/30" />
+                                <InputOTPSlot index={5} className="border-primary/30" />
+                              </InputOTPGroup>
+                            </InputOTP>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <Button 
+                      type="submit" 
+                      className="w-full text-lg py-6 bg-primary hover:bg-primary/90 transform hover:scale-105 transition-all duration-300"
+                      disabled={isVerifying}
+                    >
+                      {isVerifying ? (
+                        <>
+                          <Loader className="mr-2 h-4 w-4 animate-spin" />
+                          Verifying...
+                        </>
+                      ) : (
+                        <>
+                          <Check className="mr-2 h-4 w-4" />
+                          Verify and Create Account
+                        </>
+                      )}
+                    </Button>
+                  </form>
+                </Form>
+                
+                <div className="text-center">
+                  <button 
+                    type="button" 
+                    className="text-sm text-primary hover:underline"
+                    onClick={resetOTPProcess}
+                  >
+                    Back to signup
+                  </button>
                 </div>
               </div>
-            </form>
+            )}
           </CardContent>
           <CardFooter className="flex-col space-y-4">
             <div className="text-center">

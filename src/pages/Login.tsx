@@ -6,29 +6,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { useForm } from "react-hook-form";
 import DynamicBackground from '@/components/DynamicBackground';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from "@/hooks/use-toast";
 import BotLogo from '@/components/BotLogo';
-import { Check, Loader, Mail } from "lucide-react";
+import { Loader } from "lucide-react";
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [showOTP, setShowOTP] = useState(false);
-  const [verificationCode, setVerificationCode] = useState('');
-  const [isVerifying, setIsVerifying] = useState(false);
   const { signIn, signInWithGitHub, user, loading } = useAuth();
   const navigate = useNavigate();
-
-  const otpForm = useForm({
-    defaultValues: {
-      otp: "",
-    },
-  });
 
   useEffect(() => {
     if (user) {
@@ -39,38 +27,10 @@ const Login = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      // First step - validate credentials
-      if (!showOTP) {
-        // In a real app, you would verify credentials first, then send OTP
-        // For demo, we'll just show the OTP input
-        toast({
-          title: "Verification Required",
-          description: "Please enter the verification code sent to your email",
-        });
-        setShowOTP(true);
-        // Simulate sending code to email
-        setVerificationCode("123456"); // This would be generated and sent server-side
-        return;
-      }
-      
-      // Second step - verify OTP
-      const otpValue = otpForm.getValues().otp;
-      if (otpValue !== verificationCode) {
-        toast({
-          title: "Invalid Code",
-          description: "The verification code you entered is incorrect",
-          variant: "destructive"
-        });
-        return;
-      }
-      
-      setIsVerifying(true);
-      
-      // Complete sign-in process
       await signIn(email, password);
       
       toast({
-        title: "Verification Successful",
+        title: "Login Successful",
         description: "You have been successfully logged in",
       });
     } catch (error: any) {
@@ -79,8 +39,6 @@ const Login = () => {
         description: error.message || "Please check your credentials and try again",
         variant: "destructive"
       });
-    } finally {
-      setIsVerifying(false);
     }
   };
 
@@ -94,11 +52,6 @@ const Login = () => {
         variant: "destructive"
       });
     }
-  };
-
-  const resetOTPProcess = () => {
-    setShowOTP(false);
-    otpForm.reset();
   };
 
   return (
@@ -117,149 +70,81 @@ const Login = () => {
           <CardHeader>
             <CardTitle className="text-2xl text-center text-primary">Login</CardTitle>
             <CardDescription className="text-center">
-              {showOTP 
-                ? "Enter the verification code to continue" 
-                : "Enter your credentials to access your account"}
+              Enter your credentials to access your account
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {!showOTP ? (
-              <form onSubmit={handleLogin}>
-                <div className="space-y-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="email" className="text-lg text-primary">Email</Label>
-                    <Input 
-                      id="email" 
-                      type="email" 
-                      className="input-field focus:ring-primary/50 transition-all duration-300" 
-                      placeholder="Enter your email" 
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <Label htmlFor="password" className="text-lg text-primary">Password</Label>
-                      <Link to="/forgot-password" className="text-sm text-primary hover:underline transition-colors duration-300">
-                        Forgot password?
-                      </Link>
-                    </div>
-                    <Input 
-                      id="password" 
-                      type="password" 
-                      className="input-field focus:ring-primary/50 transition-all duration-300" 
-                      placeholder="Enter your password" 
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                    />
-                  </div>
-                  <Button 
-                    type="submit" 
-                    className="w-full text-lg py-6 bg-primary hover:bg-primary/90 transform hover:scale-105 transition-all duration-300"
-                    disabled={loading}
-                  >
-                    {loading ? "Processing..." : "Continue"}
-                  </Button>
-                </div>
-              </form>
-            ) : (
+            <form onSubmit={handleLogin}>
               <div className="space-y-6">
-                <div className="flex justify-center items-center space-x-2 mb-4">
-                  <div className="bg-primary/10 p-2 rounded-full">
-                    <Mail className="h-6 w-6 text-primary" />
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="text-lg text-primary">Email</Label>
+                  <Input 
+                    id="email" 
+                    type="email" 
+                    className="input-field focus:ring-primary/50 transition-all duration-300" 
+                    placeholder="Enter your email" 
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="password" className="text-lg text-primary">Password</Label>
+                    <Link to="/forgot-password" className="text-sm text-primary hover:underline transition-colors duration-300">
+                      Forgot password?
+                    </Link>
                   </div>
-                  <p className="text-sm text-gray-600">
-                    Verification code sent to <span className="font-medium">{email}</span>
-                  </p>
+                  <Input 
+                    id="password" 
+                    type="password" 
+                    className="input-field focus:ring-primary/50 transition-all duration-300" 
+                    placeholder="Enter your password" 
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
                 </div>
-                
-                <Form {...otpForm}>
-                  <form onSubmit={handleLogin} className="space-y-6">
-                    <FormField
-                      control={otpForm.control}
-                      name="otp"
-                      render={({ field }) => (
-                        <FormItem className="space-y-3">
-                          <FormLabel className="text-center block">Verification Code</FormLabel>
-                          <FormControl>
-                            <InputOTP maxLength={6} {...field}>
-                              <InputOTPGroup>
-                                <InputOTPSlot index={0} className="border-primary/30" />
-                                <InputOTPSlot index={1} className="border-primary/30" />
-                                <InputOTPSlot index={2} className="border-primary/30" />
-                                <InputOTPSlot index={3} className="border-primary/30" />
-                                <InputOTPSlot index={4} className="border-primary/30" />
-                                <InputOTPSlot index={5} className="border-primary/30" />
-                              </InputOTPGroup>
-                            </InputOTP>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <Button 
-                      type="submit" 
-                      className="w-full text-lg py-6 bg-primary hover:bg-primary/90 transform hover:scale-105 transition-all duration-300"
-                      disabled={isVerifying}
-                    >
-                      {isVerifying ? (
-                        <>
-                          <Loader className="mr-2 h-4 w-4 animate-spin" />
-                          Verifying...
-                        </>
-                      ) : (
-                        <>
-                          <Check className="mr-2 h-4 w-4" />
-                          Verify and Login
-                        </>
-                      )}
-                    </Button>
-                  </form>
-                </Form>
-                
-                <div className="text-center">
-                  <button 
-                    type="button" 
-                    className="text-sm text-primary hover:underline"
-                    onClick={resetOTPProcess}
-                  >
-                    Back to login
-                  </button>
-                </div>
+                <Button 
+                  type="submit" 
+                  className="w-full text-lg py-6 bg-primary hover:bg-primary/90 transform hover:scale-105 transition-all duration-300"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <>
+                      <Loader className="mr-2 h-4 w-4 animate-spin" />
+                      Logging in...
+                    </>
+                  ) : "Log In"}
+                </Button>
               </div>
-            )}
+            </form>
 
-            {!showOTP && (
-              <>
-                <div className="relative mt-6">
-                  <div className="absolute inset-0 flex items-center">
-                    <Separator className="w-full" />
-                  </div>
-                  <div className="relative flex justify-center">
-                    <span className="bg-card px-2 text-muted-foreground">
-                      Or continue with
-                    </span>
-                  </div>
-                </div>
+            <div className="relative mt-6">
+              <div className="absolute inset-0 flex items-center">
+                <Separator className="w-full" />
+              </div>
+              <div className="relative flex justify-center">
+                <span className="bg-card px-2 text-muted-foreground">
+                  Or continue with
+                </span>
+              </div>
+            </div>
 
-                <div className="flex flex-col space-y-3 mt-6">
-                  <Button 
-                    type="button" 
-                    variant="outline" 
-                    className="w-full py-6 hover:border-primary hover:bg-primary/5 transform hover:scale-105 transition-all duration-300"
-                    onClick={handleGitHubLogin}
-                    disabled={loading}
-                  >
-                    <svg className="mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                      <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                    </svg>
-                    GitHub
-                  </Button>
-                </div>
-              </>
-            )}
+            <div className="flex flex-col space-y-3 mt-6">
+              <Button 
+                type="button" 
+                variant="outline" 
+                className="w-full py-6 hover:border-primary hover:bg-primary/5 transform hover:scale-105 transition-all duration-300"
+                onClick={handleGitHubLogin}
+                disabled={loading}
+              >
+                <svg className="mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+                GitHub
+              </Button>
+            </div>
           </CardContent>
           <CardFooter className="flex-col space-y-4">
             <div className="text-center">
