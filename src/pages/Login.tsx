@@ -8,7 +8,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Separator } from "@/components/ui/separator";
 import DynamicBackground from '@/components/DynamicBackground';
 import { useAuth } from '@/contexts/AuthContext';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "@/hooks/use-toast";
 import BotLogo from '@/components/BotLogo';
 
@@ -26,11 +25,27 @@ const Login = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    await signIn(email, password);
+    try {
+      await signIn(email, password);
+    } catch (error: any) {
+      toast({
+        title: "Login Failed",
+        description: error.message || "Please check your credentials and try again",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleGitHubLogin = async () => {
-    await signInWithGitHub();
+    try {
+      await signInWithGitHub();
+    } catch (error: any) {
+      toast({
+        title: "GitHub Login Failed",
+        description: error.message || "An error occurred during GitHub login",
+        variant: "destructive"
+      });
+    }
   };
 
   return (
@@ -49,7 +64,7 @@ const Login = () => {
           <CardHeader>
             <CardTitle className="text-2xl text-center text-primary">Login</CardTitle>
             <CardDescription className="text-center">
-              Choose a login method to access your account
+              Enter your credentials to access your account
             </CardDescription>
           </CardHeader>
           <CardContent>

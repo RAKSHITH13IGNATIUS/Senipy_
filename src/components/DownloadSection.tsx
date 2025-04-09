@@ -1,8 +1,28 @@
 
-import React from 'react';
-import { ArrowDown, Download } from 'lucide-react';
+import React, { useState } from 'react';
+import { ArrowDown, Download, Lock } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { Button } from "@/components/ui/button";
+import { toast } from '@/hooks/use-toast';
 
 const DownloadSection: React.FC = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  
+  const handleDownloadClick = (e: React.MouseEvent) => {
+    if (!user) {
+      e.preventDefault();
+      toast({
+        title: "Authentication Required",
+        description: "Please sign in to download the SENIPY APK",
+        variant: "destructive",
+      });
+      navigate('/login');
+      return false;
+    }
+  };
+
   return (
     <section id="download" className="py-16 bg-gradient-to-b from-primary/20 to-blue-100">
       <div className="container mx-auto px-4">
@@ -26,26 +46,44 @@ const DownloadSection: React.FC = () => {
             
             <h3 className="text-2xl font-bold mb-6">Download APK</h3>
             
-            <div className="bg-gray-50 rounded-xl p-6 w-full mb-8">
-              <ol className="list-decimal list-inside space-y-3 text-lg">
-                <li>Click the download button below.</li>
-                <li>Open the APK file on your Android device.</li>
-                <li>Follow the on-screen installation instructions.</li>
-                <li>Allow any required permissions when prompted.</li>
-                <li>Launch SENIPY and start exploring!</li>
-              </ol>
-            </div>
-            
-            <a 
-              href="https://www.dropbox.com/scl/fi/k9n5w4smbrr5oscq5oxom/_Senipy_18707334.apk?rlkey=uh7yxv48fyxvh86ztuvstsfql&st=ybyim5tf&dl=1" 
-              className="btn-primary flex items-center gap-2 text-xl px-8 py-4 rounded-full bg-primary text-white hover:bg-primary/90 shadow-lg transform hover:scale-105 transition-all duration-300" 
-              download="senipy.apk"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Download size={24} />
-              Download APK
-            </a>
+            {user ? (
+              <>
+                <div className="bg-gray-50 rounded-xl p-6 w-full mb-8">
+                  <ol className="list-decimal list-inside space-y-3 text-lg">
+                    <li>Click the download button below.</li>
+                    <li>Open the APK file on your Android device.</li>
+                    <li>Follow the on-screen installation instructions.</li>
+                    <li>Allow any required permissions when prompted.</li>
+                    <li>Launch SENIPY and start exploring!</li>
+                  </ol>
+                </div>
+                
+                <a 
+                  href="https://www.dropbox.com/scl/fi/k9n5w4smbrr5oscq5oxom/_Senipy_18707334.apk?rlkey=uh7yxv48fyxvh86ztuvstsfql&st=ybyim5tf&dl=1" 
+                  className="btn-primary flex items-center gap-2 text-xl px-8 py-4 rounded-full bg-primary text-white hover:bg-primary/90 shadow-lg transform hover:scale-105 transition-all duration-300" 
+                  download="senipy.apk"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={handleDownloadClick}
+                >
+                  <Download size={24} />
+                  Download APK
+                </a>
+              </>
+            ) : (
+              <div className="text-center p-6">
+                <div className="flex items-center justify-center mb-6 text-gray-500">
+                  <Lock className="mr-2" />
+                  <p className="text-lg">Authentication required to download</p>
+                </div>
+                <Button
+                  onClick={() => navigate('/login')}
+                  className="btn-primary flex items-center gap-2 text-xl px-8 py-4 rounded-full bg-primary text-white hover:bg-primary/90 shadow-lg transform hover:scale-105 transition-all duration-300"
+                >
+                  Sign in to Download
+                </Button>
+              </div>
+            )}
             
             <p className="mt-8 text-gray-500 text-center">
               Need help installing? Contact our support team at senipy08@gmail.com
