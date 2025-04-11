@@ -1,23 +1,18 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-
-interface AuthContextProps {
-  session: Session | null;
-  user: User | null;
-  signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string, firstName: string, lastName: string) => Promise<boolean>;
-  signOut: () => Promise<void>;
-  signInWithGoogle: () => Promise<void>;
-  signInWithGitHub: () => Promise<void>;
-  sendPhoneOTP: (phone: string) => Promise<boolean>;
-  verifyPhoneOTP: (phone: string, otp: string) => Promise<boolean>;
-  loading: boolean;
-}
-
-const AuthContext = createContext<AuthContextProps | undefined>(undefined);
+import AuthContext from './AuthContext';
+import { 
+  signInWithPassword, 
+  signUpWithEmail, 
+  signOutUser, 
+  signInWithOAuthProvider,
+  simulateSendPhoneOTP,
+  simulateVerifyPhoneOTP
+} from '@/utils/auth.utils';
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [session, setSession] = useState<Session | null>(null);
@@ -59,9 +54,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signIn = async (email: string, password: string) => {
     try {
       setLoading(true);
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      
-      if (error) throw error;
+      await signInWithPassword(email, password);
       navigate('/');
     } catch (error: any) {
       toast({
@@ -81,19 +74,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       // Only proceed with email signup if email is provided
       if (email && email.includes('@')) {
-        const { error } = await supabase.auth.signUp({ 
-          email, 
-          password,
-          options: {
-            data: {
-              first_name: firstName,
-              last_name: lastName,
-            },
-            emailRedirectTo: `${window.location.origin}/login`,
-          }
-        });
-        
-        if (error) throw error;
+        await signUpWithEmail(email, password, firstName, lastName);
         
         toast({
           title: "Registration Initiated",
@@ -123,7 +104,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signOut = async () => {
     try {
-      await supabase.auth.signOut();
+      await signOutUser();
       navigate('/');
     } catch (error: any) {
       toast({
@@ -137,14 +118,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signInWithGoogle = async () => {
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: window.location.origin,
-        }
-      });
-      
-      if (error) throw error;
+      await signInWithOAuthProvider('google');
     } catch (error: any) {
       toast({
         title: "Google Login Failed",
@@ -157,14 +131,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signInWithGitHub = async () => {
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'github',
-        options: {
-          redirectTo: window.location.origin,
-        }
-      });
-      
-      if (error) throw error;
+      await signInWithOAuthProvider('github');
     } catch (error: any) {
       toast({
         title: "GitHub Login Failed",
@@ -179,12 +146,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       setLoading(true);
       
-      // In a real implementation, this would use Supabase phone auth or a third-party SMS provider
-      // For demo purposes, we'll simulate sending an OTP
-      console.log(`Simulating sending OTP to ${phone}`);
-      
-      // In a production environment, you would call an API to send the OTP
-      // For our demo, we'll return success and use a fixed OTP (123456)
+      await simulateSendPhoneOTP(phone);
       
       toast({
         title: "OTP Sent",
@@ -208,14 +170,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       setLoading(true);
       
-      // In a real implementation, this would verify the OTP with a service
-      // For demo purposes, we'll accept "123456" as the valid OTP
-      if (otp !== "123456") {
-        throw new Error("Invalid verification code");
-      }
-      
-      // In a production environment, you would now create the user account
-      // and associate it with the verified phone number
+      await simulateVerifyPhoneOTP(phone, otp);
       
       toast({
         title: "Phone Verified",
@@ -251,12 +206,4 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       {children}
     </AuthContext.Provider>
   );
-};
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
 };

@@ -10,7 +10,7 @@ import Signup from "./pages/Signup";
 import Admin from "./pages/Admin";
 import Games from "./pages/Games";
 import NotFound from "./pages/NotFound";
-import { AuthProvider } from "./contexts/AuthContext";
+import { AuthProvider } from "./contexts/auth";
 import ProtectedRoute from "./components/ProtectedRoute";
 import UserProfile from "./pages/UserProfile";
 import Feedback from "./pages/Feedback";

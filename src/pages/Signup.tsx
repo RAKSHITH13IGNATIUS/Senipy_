@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import DynamicBackground from '@/components/DynamicBackground';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts/auth';
 import { Separator } from "@/components/ui/separator";
 import BotLogo from '@/components/BotLogo';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
