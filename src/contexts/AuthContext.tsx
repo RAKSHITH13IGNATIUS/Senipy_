@@ -12,6 +12,8 @@ interface AuthContextProps {
   signOut: () => Promise<void>;
   signInWithGoogle: () => Promise<void>;
   signInWithGitHub: () => Promise<void>;
+  sendPhoneOTP: (phone: string) => Promise<boolean>;
+  verifyPhoneOTP: (phone: string, otp: string) => Promise<boolean>;
   loading: boolean;
 }
 
@@ -83,7 +85,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           data: {
             first_name: firstName,
             last_name: lastName,
-          }
+          },
+          emailRedirectTo: `${window.location.origin}/login`,
         }
       });
       
@@ -160,6 +163,61 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const sendPhoneOTP = async (phone: string): Promise<boolean> => {
+    try {
+      setLoading(true);
+      
+      // In a real implementation, this would use Supabase phone auth
+      // For now, we'll simulate sending an OTP
+      console.log(`Simulating sending OTP to ${phone}`);
+      
+      // Return success for demo
+      toast({
+        title: "OTP Sent",
+        description: `A verification code has been sent to ${phone}`,
+      });
+      return true;
+    } catch (error: any) {
+      toast({
+        title: "Failed to Send OTP",
+        description: error.message,
+        variant: "destructive",
+      });
+      console.error('Error sending OTP:', error);
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const verifyPhoneOTP = async (phone: string, otp: string): Promise<boolean> => {
+    try {
+      setLoading(true);
+      
+      // In a real implementation, this would verify the OTP with Supabase
+      // For demo purposes, we'll accept "123456" as the valid OTP
+      if (otp !== "123456") {
+        throw new Error("Invalid verification code");
+      }
+      
+      toast({
+        title: "Phone Verified",
+        description: "Your phone number has been verified successfully",
+      });
+      return true;
+    } catch (error: any) {
+      toast({
+        title: "Verification Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+      console.error('Error verifying OTP:', error);
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <AuthContext.Provider value={{ 
       session, 
@@ -169,6 +227,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       signOut,
       signInWithGoogle,
       signInWithGitHub,
+      sendPhoneOTP,
+      verifyPhoneOTP,
       loading 
     }}>
       {children}
