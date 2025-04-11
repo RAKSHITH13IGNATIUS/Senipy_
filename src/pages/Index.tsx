@@ -34,6 +34,10 @@ const Index = () => {
     };
   }, []);
 
+  const scrollToFeatures = () => {
+    document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <div className="min-h-screen relative overflow-hidden">
       <DynamicBackground />
@@ -54,7 +58,11 @@ const Index = () => {
                 particularly for seniors and those seeking an accessible technology experience.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button size="lg" className="bg-primary hover:bg-primary/90 text-lg">
+                <Button 
+                  size="lg" 
+                  className="bg-primary hover:bg-primary/90 text-lg"
+                  onClick={scrollToFeatures}
+                >
                   Get Started
                 </Button>
                 <Link to="/games">
