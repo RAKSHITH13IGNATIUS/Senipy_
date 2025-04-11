@@ -26,6 +26,7 @@ const Signup = () => {
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [showOTP, setShowOTP] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
+  const [signupState, setSignupState] = useState<'initial' | 'otp_sent' | 'completed'>('initial');
   const [verificationType, setVerificationType] = useState<'email' | 'phone'>('email');
   const { signUp, signInWithGitHub, user, loading, sendPhoneOTP, verifyPhoneOTP } = useAuth();
   const navigate = useNavigate();
@@ -89,7 +90,7 @@ const Signup = () => {
           variant: "destructive"
         });
       }
-    } else {
+    } else if (verificationType === 'phone') {
       // Handle phone verification
       if (!phone) {
         toast({
@@ -100,38 +101,49 @@ const Signup = () => {
         return;
       }
       
-      // First step - send verification code
-      if (!showOTP) {
+      // First step - send verification code if not already sent
+      if (signupState === 'initial') {
         const success = await sendPhoneOTP(phone);
         if (success) {
+          setSignupState('otp_sent');
           setShowOTP(true);
         }
         return;
       }
       
-      // Second step - verify OTP
-      try {
-        setIsVerifying(true);
-        const otpValue = otpForm.getValues().otp;
-        
-        const success = await verifyPhoneOTP(phone, otpValue);
-        if (success) {
-          // Complete registration with phone
-          await signUp(email || `${phone}@senipy.com`, password, firstName, lastName);
+      // Second step - verify OTP and complete registration
+      if (signupState === 'otp_sent') {
+        try {
+          setIsVerifying(true);
+          const otpValue = otpForm.getValues().otp;
+          
+          const success = await verifyPhoneOTP(phone, otpValue);
+          if (success) {
+            // Create a unique email-like identifier using the phone number
+            // This is a workaround since Supabase requires an email
+            const phoneEmail = `phone_${phone.replace(/[^0-9]/g, '')}@senipy.com`;
+            
+            // Complete registration with the phone-based account
+            const signupSuccess = await signUp(phoneEmail, password, firstName, lastName);
+            
+            if (signupSuccess) {
+              setSignupState('completed');
+              toast({
+                title: "Registration Successful",
+                description: "Your phone has been verified and your account has been created",
+              });
+              navigate('/login');
+            }
+          }
+        } catch (error: any) {
           toast({
-            title: "Registration Successful",
-            description: "Your account has been created successfully",
+            title: "Verification Failed",
+            description: error.message || "An error occurred during verification",
+            variant: "destructive"
           });
-          navigate('/login');
+        } finally {
+          setIsVerifying(false);
         }
-      } catch (error: any) {
-        toast({
-          title: "Verification Failed",
-          description: error.message || "An error occurred during verification",
-          variant: "destructive"
-        });
-      } finally {
-        setIsVerifying(false);
       }
     }
   };
@@ -142,6 +154,7 @@ const Signup = () => {
 
   const resetOTPProcess = () => {
     setShowOTP(false);
+    setSignupState('initial');
     otpForm.reset();
   };
 
@@ -290,7 +303,7 @@ const Signup = () => {
                         onChange={(e) => setPhone(e.target.value)}
                       />
                       <p className="text-xs text-gray-500 mt-1">
-                        You'll receive a verification code via SMS
+                        You'll receive a verification code via SMS (use 123456 for demo)
                       </p>
                     </TabsContent>
                   </Tabs>
