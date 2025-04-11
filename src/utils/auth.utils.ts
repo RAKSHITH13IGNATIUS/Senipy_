@@ -1,6 +1,6 @@
 
 import { supabase } from '@/integrations/supabase/client';
-import { ToastProps } from '@/hooks/use-toast';
+import { toast as useToast } from '@/hooks/use-toast';
 
 export const signInWithPassword = async (email: string, password: string) => {
   const { error } = await supabase.auth.signInWithPassword({ email, password });
