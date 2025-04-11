@@ -78,11 +78,13 @@ const Signup = () => {
       }
       
       try {
-        await signUp(email, password, firstName, lastName);
-        toast({
-          title: "Registration Initiated",
-          description: "Please check your email to confirm your account",
-        });
+        const success = await signUp(email, password, firstName, lastName);
+        if (success) {
+          toast({
+            title: "Registration Initiated",
+            description: "Please check your email to confirm your account",
+          });
+        }
       } catch (error: any) {
         toast({
           title: "Registration Failed",
