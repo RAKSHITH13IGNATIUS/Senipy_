@@ -4,8 +4,10 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/auth";
 import { useEffect, useState } from "react";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
-import { Menu } from "lucide-react";
+import { Menu, Trophy } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import ScoreCard from "./ScoreCard";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 export const Navbar = () => {
   const { user, signOut } = useAuth();
@@ -32,6 +34,20 @@ export const Navbar = () => {
       <Link to="/feedback" className="text-foreground hover:text-primary transition-colors">
         Feedback
       </Link>
+      
+      {localStorage.getItem('gameScores') && (
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="ghost" size="icon" className="text-foreground hover:text-primary transition-colors">
+              <Trophy className="h-5 w-5" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-80" align="end">
+            <ScoreCard />
+          </PopoverContent>
+        </Popover>
+      )}
+      
       {user ? (
         <>
           <Link 

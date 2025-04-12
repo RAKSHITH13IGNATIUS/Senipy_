@@ -139,7 +139,19 @@ const Puzzle = () => {
         title: "Puzzle Completed!",
         description: `You solved it in ${moves + 1} moves!`,
       });
+      
+      // Save score to localStorage - lower moves is better
+      const currentScore = 100 - (moves * 3); // More penalty per move than memory game
+      const finalScore = Math.max(0, currentScore); // Ensure score doesn't go below 0
+      saveGameScore('puzzle', finalScore);
     }
+  };
+  
+  // Save game score to localStorage
+  const saveGameScore = (gameType: string, score: number) => {
+    const scores = JSON.parse(localStorage.getItem('gameScores') || '{}');
+    scores[gameType] = score;
+    localStorage.setItem('gameScores', JSON.stringify(scores));
   };
   
   // Start the game when component mounts
@@ -176,10 +188,10 @@ const Puzzle = () => {
         </div>
       )}
       
-      <Card className="mb-6 p-4">
-        <CardContent className="p-0">
+      <Card className="mb-6 p-4 shadow-lg">
+        <CardContent className="p-0 bg-white rounded-lg">
           <div 
-            className="grid gap-1 mx-auto"
+            className="grid gap-2 mx-auto bg-gray-100 p-3 rounded-lg"
             style={{ 
               gridTemplateRows: `repeat(${GRID_SIZE}, 1fr)`,
               gridTemplateColumns: `repeat(${GRID_SIZE}, 1fr)`,
@@ -193,17 +205,19 @@ const Puzzle = () => {
               return tile.value === 0 ? (
                 <div 
                   key={tile.value}
-                  className="bg-gray-100 rounded"
+                  className="bg-gray-200 rounded"
                   style={{ gridRow: row, gridColumn: col }}
                 />
               ) : (
                 <div
                   key={tile.value}
-                  className="bg-primary/80 text-white flex items-center justify-center text-2xl font-bold rounded cursor-pointer hover:bg-primary transition-colors"
+                  className="bg-primary/80 text-white flex items-center justify-center text-2xl font-bold rounded cursor-pointer hover:bg-primary transition-colors shadow-md"
                   style={{ gridRow: row, gridColumn: col }}
                   onClick={() => handleTileClick(tile.position)}
                 >
-                  {tile.value}
+                  <div className="bg-white/20 w-full h-full flex items-center justify-center">
+                    {tile.value}
+                  </div>
                 </div>
               );
             })}
@@ -211,7 +225,7 @@ const Puzzle = () => {
         </CardContent>
       </Card>
       
-      <div className="bg-gray-50 p-4 rounded-lg">
+      <div className="bg-gray-50 p-4 rounded-lg shadow">
         <h3 className="font-bold mb-2">How to Play:</h3>
         <p>Click on tiles adjacent to the empty space to move them. Rearrange the tiles to put them in numerical order.</p>
       </div>

@@ -88,6 +88,16 @@ const WordGame = () => {
       title: "Game Over!",
       description: `Your final score is ${score}`,
     });
+    
+    // Save score to localStorage
+    saveGameScore('word', score);
+  };
+  
+  // Save game score to localStorage
+  const saveGameScore = (gameType: string, score: number) => {
+    const scores = JSON.parse(localStorage.getItem('gameScores') || '{}');
+    scores[gameType] = score;
+    localStorage.setItem('gameScores', JSON.stringify(scores));
   };
   
   return (
@@ -121,11 +131,13 @@ const WordGame = () => {
         </Card>
       ) : (
         <>
-          <Card className="mb-6">
+          <Card className="mb-6 shadow-md">
             <CardContent className="p-6 flex flex-col items-center justify-center">
               <div className="text-center mb-6">
                 <p className="text-sm text-gray-500 mb-2">Unscramble this word:</p>
-                <h2 className="text-4xl font-bold tracking-wider">{scrambledWord}</h2>
+                <div className="bg-white shadow-inner p-4 rounded-lg">
+                  <h2 className="text-4xl font-bold tracking-wider text-gray-900">{scrambledWord}</h2>
+                </div>
               </div>
               
               <div className="w-full max-w-md">
@@ -133,7 +145,7 @@ const WordGame = () => {
                   value={userGuess}
                   onChange={(e) => setUserGuess(e.target.value)}
                   placeholder="Enter your guess"
-                  className="text-center text-xl mb-4"
+                  className="text-center text-xl mb-4 border-2 border-gray-300"
                   autoFocus
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {

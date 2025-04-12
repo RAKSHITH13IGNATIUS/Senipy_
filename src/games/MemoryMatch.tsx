@@ -42,6 +42,11 @@ const MemoryMatch = () => {
         title: "Congratulations!",
         description: `You completed the game in ${moves} moves!`,
       });
+      
+      // Save score to localStorage
+      const currentScore = 100 - (moves * 2); // Lower moves = higher score, max 100
+      const finalScore = Math.max(0, currentScore); // Ensure score doesn't go below 0
+      saveGameScore('memory', finalScore);
     }
   }, [cards, moves]);
   
@@ -105,6 +110,13 @@ const MemoryMatch = () => {
     setMoves(0);
     setGameComplete(false);
   };
+
+  // Save game score to localStorage
+  const saveGameScore = (gameType: string, score: number) => {
+    const scores = JSON.parse(localStorage.getItem('gameScores') || '{}');
+    scores[gameType] = score;
+    localStorage.setItem('gameScores', JSON.stringify(scores));
+  };
   
   return (
     <div className="container mx-auto px-4 py-8">
@@ -135,12 +147,14 @@ const MemoryMatch = () => {
             className={`cursor-pointer transition-all duration-300 ${card.isMatched ? 'opacity-70' : ''}`}
             onClick={() => handleCardClick(card.id)}
           >
-            <Card className={`h-24 ${card.isFlipped || card.isMatched ? 'bg-primary/20' : 'bg-gray-200'}`}>
+            <Card className={`h-24 ${card.isFlipped || card.isMatched ? 'bg-primary/20' : 'bg-gray-200'} shadow-md`}>
               <CardContent className="p-0 h-full flex items-center justify-center">
                 {(card.isFlipped || card.isMatched) ? (
-                  <span className="text-4xl font-bold">{card.content}</span>
+                  <span className="text-4xl font-bold text-gray-900 bg-white/80 w-full h-full flex items-center justify-center">
+                    {card.content}
+                  </span>
                 ) : (
-                  <span className="text-4xl text-gray-300">?</span>
+                  <span className="text-4xl font-bold text-gray-500 bg-gray-100 w-full h-full flex items-center justify-center">?</span>
                 )}
               </CardContent>
             </Card>

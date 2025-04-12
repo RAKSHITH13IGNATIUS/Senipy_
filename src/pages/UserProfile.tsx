@@ -9,6 +9,7 @@ import { useAuth } from '@/contexts/auth';
 import { supabase } from '@/integrations/supabase/client';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import DynamicBackground from '@/components/DynamicBackground';
+import { Camera, Upload } from 'lucide-react';
 
 // Define a temporary interface for ProfileData until Supabase types are updated
 interface ProfileData {
@@ -179,8 +180,8 @@ const UserProfile = () => {
   return (
     <div className="min-h-screen pt-24 pb-12 px-4">
       <DynamicBackground />
-      <div className="max-w-4xl mx-auto bg-white/10 backdrop-blur-md rounded-2xl p-8 shadow-xl z-10 relative">
-        <h1 className="text-3xl font-bold text-white mb-6">Your Profile</h1>
+      <div className="max-w-4xl mx-auto bg-white/80 backdrop-blur-md rounded-2xl p-8 shadow-xl z-10 relative">
+        <h1 className="text-3xl font-bold text-gray-800 mb-6">Your Profile</h1>
         
         <div className="grid md:grid-cols-[250px_1fr] gap-8">
           <Card className="h-fit">
@@ -189,19 +190,24 @@ const UserProfile = () => {
               <CardDescription>Update your profile picture</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col items-center space-y-4">
-              <Avatar className="h-32 w-32">
-                <AvatarImage src={avatarUrl || undefined} />
-                <AvatarFallback className="bg-primary text-white text-2xl">
-                  {getUserInitials()}
-                </AvatarFallback>
-              </Avatar>
+              <div className="relative group">
+                <Avatar className="h-32 w-32 border-4 border-white shadow-lg">
+                  <AvatarImage src={avatarUrl || undefined} />
+                  <AvatarFallback className="bg-primary text-white text-2xl">
+                    {getUserInitials()}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Camera className="text-white" />
+                </div>
+              </div>
               
               <div className="flex flex-col w-full space-y-2">
                 <Label 
                   htmlFor="avatar" 
-                  className="w-full bg-primary text-white py-2 px-4 rounded-md text-center cursor-pointer hover:bg-primary/90 transition-colors"
+                  className="w-full bg-primary text-white py-2 px-4 rounded-md text-center cursor-pointer hover:bg-primary/90 transition-colors flex items-center justify-center gap-2"
                 >
-                  {uploading ? "Uploading..." : "Upload Image"}
+                  {uploading ? "Uploading..." : (<><Upload size={16} /> Upload Image</>)}
                 </Label>
                 <Input 
                   id="avatar" 
