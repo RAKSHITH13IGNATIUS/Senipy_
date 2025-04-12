@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Refresh, Check, Crown } from 'lucide-react';
+import { RefreshCw, Check, Crown } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
 const wordList = [
@@ -156,7 +156,7 @@ const WordGame = () => {
                     variant="outline" 
                     className="flex items-center gap-2"
                   >
-                    <Refresh size={18} />
+                    <RefreshCw size={18} />
                     Skip
                   </Button>
                 </div>

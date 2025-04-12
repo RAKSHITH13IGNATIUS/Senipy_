@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Refresh, Trophy } from 'lucide-react';
+import { RefreshCw, Trophy } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
 // Card icons
@@ -115,7 +115,7 @@ const MemoryMatch = () => {
             <span className="font-bold">Moves: {moves}</span>
           </div>
           <Button onClick={resetGame} variant="outline" className="flex items-center gap-2">
-            <Refresh size={18} />
+            <RefreshCw size={18} />
             Reset
           </Button>
         </div>

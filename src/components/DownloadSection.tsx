@@ -80,18 +80,27 @@ const DownloadSection: React.FC = () => {
                   </ol>
                 </div>
                 
-                <a 
-                  href="https://www.dropbox.com/scl/fi/k9n5w4smbrr5oscq5oxom/_Senipy_18707334.apk?rlkey=uh7yxv48fyxvh86ztuvstsfql&st=ybyim5tf&dl=1" 
-                  className="btn-primary flex items-center gap-2 text-xl px-8 py-4 rounded-full bg-primary text-white hover:bg-primary/90 shadow-lg transform hover:scale-105 transition-all duration-300" 
-                  download="senipy.apk"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={handleDownloadClick}
-                  disabled={downloading}
-                >
-                  <Download size={24} />
-                  {downloading ? 'Downloading...' : 'Download APK'}
-                </a>
+                {downloading ? (
+                  <Button 
+                    disabled
+                    className="flex items-center gap-2 text-xl px-8 py-4 rounded-full bg-primary text-white hover:bg-primary/90 shadow-lg"
+                  >
+                    <Download size={24} />
+                    Downloading...
+                  </Button>
+                ) : (
+                  <a 
+                    href="https://www.dropbox.com/scl/fi/k9n5w4smbrr5oscq5oxom/_Senipy_18707334.apk?rlkey=uh7yxv48fyxvh86ztuvstsfql&st=ybyim5tf&dl=1" 
+                    className="btn-primary flex items-center gap-2 text-xl px-8 py-4 rounded-full bg-primary text-white hover:bg-primary/90 shadow-lg transform hover:scale-105 transition-all duration-300" 
+                    download="senipy.apk"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={handleDownloadClick}
+                  >
+                    <Download size={24} />
+                    Download APK
+                  </a>
+                )}
               </>
             ) : (
               <div className="text-center p-6">

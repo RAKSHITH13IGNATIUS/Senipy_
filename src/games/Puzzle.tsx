@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Refresh, Trophy } from 'lucide-react';
+import { RefreshCw, Trophy } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
 const GRID_SIZE = 3; // 3x3 grid
@@ -163,7 +163,7 @@ const Puzzle = () => {
             <span className="font-bold">Moves: {moves}</span>
           </div>
           <Button onClick={initializePuzzle} variant="outline" className="flex items-center gap-2">
-            <Refresh size={18} />
+            <RefreshCw size={18} />
             Reset
           </Button>
         </div>
