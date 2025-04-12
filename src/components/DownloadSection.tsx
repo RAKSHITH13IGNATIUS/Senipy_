@@ -9,6 +9,7 @@ import { toast } from '@/hooks/use-toast';
 const DownloadSection: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [downloading, setDownloading] = useState(false);
   
   const handleDownloadClick = (e: React.MouseEvent) => {
     if (!user) {
@@ -21,6 +22,27 @@ const DownloadSection: React.FC = () => {
       navigate('/login');
       return false;
     }
+    
+    // Show downloading toast
+    setDownloading(true);
+    toast({
+      title: "Download Started",
+      description: "Your download is starting now. Please wait...",
+    });
+    
+    // Simulate download completion
+    setTimeout(() => {
+      setDownloading(false);
+      toast({
+        title: "Download Complete",
+        description: "Follow the installation steps to set up SENIPY on your device.",
+      });
+    }, 2000);
+  };
+
+  const handleLearnMoreClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
@@ -65,9 +87,10 @@ const DownloadSection: React.FC = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={handleDownloadClick}
+                  disabled={downloading}
                 >
                   <Download size={24} />
-                  Download APK
+                  {downloading ? 'Downloading...' : 'Download APK'}
                 </a>
               </>
             ) : (
@@ -90,16 +113,13 @@ const DownloadSection: React.FC = () => {
             </p>
             
             <div className="mt-8 pt-4 border-t border-gray-100">
-              <a 
-                href="#features" 
-                className="btn-secondary flex items-center gap-2 px-6 py-3 rounded-full bg-secondary text-white hover:bg-secondary/90 shadow-md transform hover:scale-105 transition-all duration-300"
-                onClick={(e) => {
-                  e.preventDefault();
-                  document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
-                }}
+              <Button 
+                variant="secondary"
+                className="flex items-center gap-2 px-6 py-3 rounded-full text-white hover:bg-secondary/90 shadow-md transform hover:scale-105 transition-all duration-300"
+                onClick={handleLearnMoreClick}
               >
                 Learn More
-              </a>
+              </Button>
             </div>
           </div>
         </div>
