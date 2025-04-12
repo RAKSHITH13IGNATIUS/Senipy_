@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { ArrowDown, Download, Lock } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts/auth';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { toast } from '@/hooks/use-toast';
