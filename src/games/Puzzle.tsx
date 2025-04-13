@@ -188,7 +188,7 @@ const Puzzle = () => {
         </div>
       )}
       
-      <Card className="mb-6 p-4 shadow-lg">
+      <Card className="mb-6 p-4 shadow-lg bg-white">
         <CardContent className="p-0 bg-white rounded-lg">
           <div 
             className="grid gap-2 mx-auto bg-gray-100 p-3 rounded-lg"
@@ -225,7 +225,7 @@ const Puzzle = () => {
         </CardContent>
       </Card>
       
-      <div className="bg-gray-50 p-4 rounded-lg shadow">
+      <div className="bg-white/90 p-4 rounded-lg shadow">
         <h3 className="font-bold mb-2">How to Play:</h3>
         <p>Click on tiles adjacent to the empty space to move them. Rearrange the tiles to put them in numerical order.</p>
       </div>

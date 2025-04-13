@@ -115,7 +115,7 @@ const WordGame = () => {
       </div>
       
       {!gameActive ? (
-        <Card className="mb-6">
+        <Card className="mb-6 bg-white/95">
           <CardContent className="p-6 flex flex-col items-center justify-center">
             {score > 0 && (
               <div className="mb-6 text-center">
@@ -131,11 +131,11 @@ const WordGame = () => {
         </Card>
       ) : (
         <>
-          <Card className="mb-6 shadow-md">
+          <Card className="mb-6 shadow-md bg-white">
             <CardContent className="p-6 flex flex-col items-center justify-center">
               <div className="text-center mb-6">
                 <p className="text-sm text-gray-500 mb-2">Unscramble this word:</p>
-                <div className="bg-white shadow-inner p-4 rounded-lg">
+                <div className="bg-white shadow-inner p-4 rounded-lg border border-gray-200">
                   <h2 className="text-4xl font-bold tracking-wider text-gray-900">{scrambledWord}</h2>
                 </div>
               </div>
@@ -177,6 +177,11 @@ const WordGame = () => {
           </Card>
         </>
       )}
+      
+      <div className="mt-6 bg-white/90 p-4 rounded-lg shadow">
+        <h3 className="font-bold mb-2">How to Play:</h3>
+        <p>Unscramble as many words as you can within the time limit. Type your answer and click Check or press Enter.</p>
+      </div>
     </div>
   );
 };

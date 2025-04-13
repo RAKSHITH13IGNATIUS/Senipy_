@@ -161,6 +161,11 @@ const MemoryMatch = () => {
           </div>
         ))}
       </div>
+      
+      <div className="mt-6 bg-white/90 p-4 rounded-lg shadow">
+        <h3 className="font-bold mb-2">How to Play:</h3>
+        <p>Find all matching pairs of cards in as few moves as possible. Click on a card to reveal it, then try to find its match.</p>
+      </div>
     </div>
   );
 };
