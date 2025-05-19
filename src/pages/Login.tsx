@@ -11,6 +11,7 @@ import { useAuth } from '@/contexts/auth';
 import { toast } from "@/hooks/use-toast";
 import BotLogo from '@/components/BotLogo';
 import { Loader } from "lucide-react";
+import mixpanel from 'mixpanel-browser';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -20,13 +21,18 @@ const Login = () => {
 
   useEffect(() => {
     if (user) {
-      navigate('/');
+      navigate('/#download');
     }
   }, [user, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      // Track login attempt
+      mixpanel.track('Login Attempt', { 
+        email: email 
+      });
+      
       await signIn(email, password);
       
       toast({
@@ -34,6 +40,12 @@ const Login = () => {
         description: "You have been successfully logged in",
       });
     } catch (error: any) {
+      // Track login failure
+      mixpanel.track('Login Failed', { 
+        email: email,
+        reason: error.message || "Unknown error" 
+      });
+      
       toast({
         title: "Login Failed",
         description: error.message || "Please check your credentials and try again",
@@ -44,8 +56,16 @@ const Login = () => {
 
   const handleGitHubLogin = async () => {
     try {
+      // Track GitHub login attempt
+      mixpanel.track('GitHub Login Attempt');
+      
       await signInWithGitHub();
     } catch (error: any) {
+      // Track GitHub login failure
+      mixpanel.track('GitHub Login Failed', { 
+        reason: error.message || "Unknown error" 
+      });
+      
       toast({
         title: "GitHub Login Failed",
         description: error.message || "An error occurred during GitHub login",

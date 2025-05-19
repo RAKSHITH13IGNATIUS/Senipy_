@@ -1,15 +1,27 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowDown, Download, Lock } from 'lucide-react';
 import { useAuth } from '@/contexts/auth';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { toast } from '@/hooks/use-toast';
+import mixpanel from 'mixpanel-browser';
 
 const DownloadSection: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [downloading, setDownloading] = useState(false);
+  
+  // Handle auto-scrolling if user is directed to this section
+  useEffect(() => {
+    // Check if URL hash matches this section
+    if (window.location.hash === '#download') {
+      // Wait a bit for component to render
+      setTimeout(() => {
+        document.getElementById('download')?.scrollIntoView({ behavior: 'smooth' });
+      }, 500);
+    }
+  }, []);
   
   const handleDownloadClick = (e: React.MouseEvent) => {
     if (!user) {
@@ -25,6 +37,13 @@ const DownloadSection: React.FC = () => {
     
     // Show downloading toast
     setDownloading(true);
+    
+    // Track download start in Mixpanel
+    mixpanel.track('Download Started', {
+      distinct_id: user.id,
+      email: user.email
+    });
+    
     toast({
       title: "Download Started",
       description: "Your download is starting now. Please wait...",
@@ -33,6 +52,13 @@ const DownloadSection: React.FC = () => {
     // Simulate download completion
     setTimeout(() => {
       setDownloading(false);
+      
+      // Track download completion in Mixpanel
+      mixpanel.track('Download Completed', {
+        distinct_id: user.id,
+        email: user.email
+      });
+      
       toast({
         title: "Download Complete",
         description: "Follow the installation steps to set up SENIPY on your device.",

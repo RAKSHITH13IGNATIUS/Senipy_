@@ -13,6 +13,7 @@ import {
   simulateSendPhoneOTP,
   simulateVerifyPhoneOTP
 } from '@/utils/auth.utils';
+import mixpanel from 'mixpanel-browser';
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [session, setSession] = useState<Session | null>(null);
@@ -29,11 +30,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(currentSession?.user ?? null);
         
         if (event === 'SIGNED_IN') {
+          // Track sign-in event in Mixpanel
+          mixpanel.track('User Signed In', {
+            distinct_id: currentSession?.user?.id,
+            email: currentSession?.user?.email
+          });
+          
           toast({
             title: "Login Successful",
             description: "Welcome to SENIPY!",
           });
+          
+          // Redirect to download section after sign-in
+          navigate('/#download');
         } else if (event === 'SIGNED_OUT') {
+          // Track sign-out event in Mixpanel
+          mixpanel.track('User Signed Out');
+          
           toast({
             title: "Signed Out",
             description: "You have been signed out successfully",
@@ -49,13 +62,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
 
     return () => subscription.unsubscribe();
-  }, [toast]);
+  }, [toast, navigate]);
 
   const signIn = async (email: string, password: string) => {
     try {
       setLoading(true);
       await signInWithPassword(email, password);
-      navigate('/');
+      // The redirect will happen in the auth state change listener
     } catch (error: any) {
       toast({
         title: "Login Failed",
@@ -75,6 +88,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Only proceed with email signup if email is provided
       if (email && email.includes('@')) {
         await signUpWithEmail(email, password, firstName, lastName);
+        
+        // Track signup event in Mixpanel
+        mixpanel.track('User Signed Up', {
+          email: email,
+          firstName: firstName,
+          lastName: lastName
+        });
         
         toast({
           title: "Registration Initiated",
